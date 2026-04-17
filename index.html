@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سين جيم — نسخة عالمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c1a;
+  --team1: #e8b84b;
+  --team2: #4be8c0;
+  --cell-bg: #0d1535;
+  --cell-hover: #162050;
+  --cell-border: #1e2d5e;
+  --used: #090d1c;
+  --used-text: #1e2a45;
+  --text: #eef2ff;
+  --gold: #ffd166;
+  --header-bg: #0a1128;
+  --modal-bg: #0b1230;
+  --accent: #3a5af0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 10%, rgba(58,90,240,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 90%, rgba(75,232,192,0.07) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 30px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.game-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: clamp(48px, 10vw, 90px);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -2px;
+}
+
+.game-title .sin { color: var(--team1); }
+.game-title .div { color: #3a4a7a; font-size: 0.7em; }
+.game-title .gym { color: var(--team2); }
+
+.game-subtitle {
+  text-align: center;
+  color: #4a5a8a;
+  font-size: 15px;
+  margin-bottom: 40px;
+  letter-spacing: 3px;
+}
+
+.setup-card {
+  background: rgba(13,21,53,0.8);
+  border: 1px solid var(--cell-border);
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 700px;
+  backdrop-filter: blur(10px);
+}
+
+.setup-card h2 {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-names {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.team-input-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+.team-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+.team-label.t1 { color: var(--team1); }
+.team-label.t2 { color: var(--team2); }
+
+.team-input {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--cell-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.team-input.t1:focus { border-color: var(--team1); }
+.team-input.t2:focus { border-color: var(--team2); }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.cat-item { display: flex; flex-direction: column; gap: 6px; }
+
+.cat-team-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+
+.cat-select {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--cell-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+
+.cat-select.t1 { border-color: rgba(232,184,75,0.3); }
+.cat-select.t2 { border-color: rgba(75,232,192,0.3); }
+.cat-select.t1:focus { border-color: var(--team1); }
+.cat-select.t2:focus { border-color: var(--team2); }
+
+.start-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), #5a3af0);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(58,90,240,0.4);
+  letter-spacing: 1px;
+}
+
+.start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(58,90,240,0.5); }
+
+/* GAME */
+#game-screen {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  background: var(--header-bg);
+  border-bottom: 2px solid var(--cell-border);
+  min-height: 70px;
+}
+
+.team-score {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  gap: 2px;
+}
+
+.team-score-name { font-size: 13px; font-weight: 700; letter-spacing: 1px; opacity: 0.7; }
+.team-score-val { font-family: 'Tajawal', sans-serif; font-size: 32px; font-weight: 900; line-height: 1; }
+.t1 .team-score-val { color: var(--team1); }
+.t2 .team-score-val { color: var(--team2); }
+
+.score-mid {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-right: 1px solid var(--cell-border);
+  border-left: 1px solid var(--cell-border);
+}
+
+.vs-text { font-family: 'Tajawal', sans-serif; font-size: 20px; font-weight: 900; color: #2a3a6a; }
+
+.board-wrap { flex: 1; padding: 12px; overflow: auto; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  min-width: 600px;
+}
+
+.cat-header {
+  padding: 14px 6px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: clamp(11px, 1.5vw, 14px);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+}
+
+.cat-header.t1 {
+  background: rgba(232,184,75,0.12);
+  border: 1.5px solid rgba(232,184,75,0.3);
+  color: var(--team1);
+}
+
+.cat-header.t2 {
+  background: rgba(75,232,192,0.1);
+  border: 1.5px solid rgba(75,232,192,0.25);
+  color: var(--team2);
+}
+
+.cell {
+  aspect-ratio: 3/2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1.5px solid var(--cell-border);
+  background: var(--cell-bg);
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover:not(.used) {
+  background: var(--cell-hover);
+  transform: scale(1.04);
+  border-color: var(--accent);
+  z-index: 2;
+}
+
+.cell.used { background: var(--used); border-color: #111827; cursor: default; }
+
+.cell-val { font-family: 'Tajawal', sans-serif; font-size: clamp(16px, 2.5vw, 26px); font-weight: 900; transition: color 0.2s; }
+.cell:not(.used) .cell-val-200 { color: #aab8ff; }
+.cell:not(.used) .cell-val-400 { color: #ffcc44; }
+.cell:not(.used) .cell-val-600 { color: #ff6b6b; }
+.cell.used .cell-val { color: var(--used-text); }
+
+.cell.t1-won { background: rgba(232,184,75,0.08); border-color: rgba(232,184,75,0.2); }
+.cell.t2-won { background: rgba(75,232,192,0.07); border-color: rgba(75,232,192,0.2); }
+
+.cell-dot { position: absolute; bottom: 4px; width: 6px; height: 6px; border-radius: 50%; }
+.cell.t1-won .cell-dot { background: var(--team1); }
+.cell.t2-won .cell-dot { background: var(--team2); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--modal-bg);
+  border: 1.5px solid var(--cell-border);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 640px;
+  padding: 32px 28px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-top { display: flex; justify-content: space-between; align-items: center; }
+.modal-cat { font-size: 13px; font-weight: 700; letter-spacing: 2px; opacity: 0.6; }
+.modal-pts { font-family: 'Tajawal', sans-serif; font-size: 28px; font-weight: 900; }
+.modal-pts.p200 { color: #aab8ff; }
+.modal-pts.p400 { color: #ffcc44; }
+.modal-pts.p600 { color: #ff6b6b; }
+
+.modal-q {
+  font-size: clamp(18px, 4vw, 24px);
+  font-weight: 700;
+  line-height: 1.7;
+  text-align: center;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.modal-answer-wrap {
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid var(--cell-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  text-align: center;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-answer-blur {
+  font-size: clamp(16px, 3vw, 20px);
+  font-weight: 700;
+  color: var(--gold);
+  filter: blur(8px);
+  transition: filter 0.5s ease;
+  user-select: none;
+}
+
+.modal-answer-blur.revealed { filter: blur(0); }
+
+.reveal-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(58,90,240,0.5);
+  background: rgba(58,90,240,0.2);
+  color: #aab8ff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reveal-btn:hover { background: rgba(58,90,240,0.35); }
+
+.score-btns { display: none; gap: 10px; }
+.score-btns.show { display: flex; }
+
+.score-btn {
+  flex: 1;
+  padding: 13px 6px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.3;
+}
+
+.score-btn.t1 { background: rgba(232,184,75,0.15); border: 1.5px solid rgba(232,184,75,0.4); color: var(--team1); }
+.score-btn.t2 { background: rgba(75,232,192,0.12); border: 1.5px solid rgba(75,232,192,0.35); color: var(--team2); }
+.score-btn.nobody { background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); color: #5a6a9a; font-size: 13px; }
+.score-btn:hover { transform: translateY(-2px); }
+.score-btn.t1:hover { background: rgba(232,184,75,0.25); }
+.score-btn.t2:hover { background: rgba(75,232,192,0.2); }
+
+.close-btn {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  background: none;
+  border: none;
+  color: #4a5a8a;
+  font-size: 22px;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: 'Tajawal', sans-serif;
+}
+
+.close-btn:hover { color: var(--text); }
+
+/* RESULT */
+#result-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.result-trophy { font-size: 90px; animation: bounce 0.8s ease; }
+@keyframes bounce {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(-20px) rotate(-5deg); }
+  60% { transform: translateY(-12px) rotate(5deg); }
+}
+
+.result-winner { font-family: 'Tajawal', sans-serif; font-size: 42px; font-weight: 900; }
+
+.result-scores { display: flex; gap: 20px; justify-content: center; }
+
+.res-score-card {
+  background: var(--cell-bg);
+  border: 1.5px solid var(--cell-border);
+  border-radius: 16px;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.res-score-card .rname { font-size: 13px; font-weight: 700; opacity: 0.6; letter-spacing: 1px; }
+.res-score-card .rval { font-family: 'Tajawal', sans-serif; font-size: 44px; font-weight: 900; }
+.res-score-card.t1 .rval { color: var(--team1); }
+.res-score-card.t2 .rval { color: var(--team2); }
+
+.play-again-btn {
+  padding: 16px 40px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), #5a3af0);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(58,90,240,0.4);
+}
+
+.play-again-btn:hover { transform: translateY(-2px); }
+
+@media (max-width: 650px) {
+  .board { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div id="setup-screen">
+  <div class="game-title">
+    <span class="sin">س</span><span class="div"> / </span><span class="gym">ج</span>
+  </div>
+  <div class="game-subtitle">نسخة عالمية</div>
+
+  <div class="setup-card">
+    <h2>🏆 أسماء الفرق</h2>
+    <div class="team-names">
+      <div class="team-input-wrap">
+        <div class="team-label t1">الفريق الأول</div>
+        <input class="team-input t1" id="team1-name" type="text" value="الفريق الأول" maxlength="20">
+      </div>
+      <div class="team-input-wrap">
+        <div class="team-label t2">الفريق التاني</div>
+        <input class="team-input t2" id="team2-name" type="text" value="الفريق التاني" maxlength="20">
+      </div>
+    </div>
+
+    <h2>📂 اختار الكاتيجوري (4 لكل فريق)</h2>
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <button class="start-btn" onclick="startGame()">ابدأ اللعبة 🚀</button>
+  </div>
+</div>
+
+<div id="game-screen">
+  <div class="score-bar">
+    <div class="team-score t1">
+      <div class="team-score-name" id="t1-score-name">الفريق الأول</div>
+      <div class="team-score-val" id="t1-score-val">0</div>
+    </div>
+    <div class="score-mid"><div class="vs-text">VS</div></div>
+    <div class="team-score t2">
+      <div class="team-score-name" id="t2-score-name">الفريق التاني</div>
+      <div class="team-score-val" id="t2-score-val">0</div>
+    </div>
+  </div>
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+</div>
+
+<div id="result-screen">
+  <div class="result-trophy" id="result-trophy">🏆</div>
+  <div class="result-winner" id="result-winner"></div>
+  <div class="result-scores">
+    <div class="res-score-card t1">
+      <div class="rname" id="res-t1-name">الفريق الأول</div>
+      <div class="rval" id="res-t1-val">0</div>
+    </div>
+    <div class="res-score-card t2">
+      <div class="rname" id="res-t2-name">الفريق التاني</div>
+      <div class="rval" id="res-t2-val">0</div>
+    </div>
+  </div>
+  <button class="play-again-btn" onclick="location.reload()">العب تاني 🔄</button>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div class="modal-top">
+      <div class="modal-cat" id="modal-cat">—</div>
+      <div class="modal-pts" id="modal-pts">200</div>
+    </div>
+    <div class="modal-q" id="modal-q">...</div>
+    <div class="modal-answer-wrap">
+      <div class="modal-answer-blur" id="modal-ans">...</div>
+    </div>
+    <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">👁️ اظهر الإجابة</button>
+    <div class="score-btns" id="score-btns">
+      <button class="score-btn t1" id="give-t1" onclick="givePoint(1)">—</button>
+      <button class="score-btn nobody" onclick="givePoint(0)">محدش عرف</button>
+      <button class="score-btn t2" id="give-t2" onclick="givePoint(2)">—</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATEGORIES = {
+
+  "💻 تكنولوجيا وإنترنت": [
+    { pts: 200, q: "ما اسم نظام التشغيل مفتوح المصدر الذي طوّره لينوس تورفالدز عام ١٩٩١؟", a: "Linux" },
+    { pts: 200, q: "ماذا يعني اختصار HTTP؟", a: "HyperText Transfer Protocol" },
+    { pts: 400, q: "ما اسم البروتوكول الذي يُشفّر الاتصال بين المتصفح والسيرفر ويظهر كـ HTTPS؟", a: "TLS — Transport Layer Security (أو SSL في إصداراته القديمة)" },
+    { pts: 400, q: "في عالم الذكاء الاصطناعي، ما المقصود بـ 'Hallucination' عند نماذج اللغة؟", a: "توليد النموذج لمعلومات خاطئة أو مختلقة بثقة عالية" },
+    { pts: 600, q: "ما الفرق الجوهري بين معمارية Transformer و RNN في نماذج الذكاء الاصطناعي؟", a: "Transformer يعالج البيانات بالتوازي عبر Attention — RNN يعالجها بشكل تسلسلي مما يُبطئه ويجعله أضعف في السياقات الطويلة" },
+    { pts: 600, q: "ما اسم الورقة البحثية التي قدّمت معمارية Transformer عام ٢٠١٧ وما عنوانها الشهير؟", a: "Attention Is All You Need — قدّمها باحثو Google Brain" },
+  ],
+
+  "🕌 دين وحضارة إسلامية": [
+    { pts: 200, q: "ما عدد سور القرآن الكريم؟", a: "١١٤ سورة" },
+    { pts: 200, q: "في أي مدينة وُلد النبي محمد ﷺ؟", a: "مكة المكرمة" },
+    { pts: 400, q: "ما اسم أول دولة إسلامية مستقلة أُسّست في الأندلس وعاصمتها؟", a: "إمارة قرطبة — عاصمتها قرطبة، أسّسها عبد الرحمن الداخل عام ٧٥٦م" },
+    { pts: 400, q: "ما الفرق العقدي الرئيسي بين المذهب الأشعري والمذهب المعتزلي؟", a: "المعتزلة يُقدّمون العقل على النص في بعض المسائل — الأشاعرة يجمعون بينهما مع تقديم النص" },
+    { pts: 600, q: "من هو العالم الإسلامي الذي وضع أسس علم المقاصد الشرعية وما كتابه الأشهر؟", a: "الإمام الشاطبي — كتابه 'الموافقات'" },
+    { pts: 600, q: "ما الفرق بين الإجماع والقياس كمصدرين من مصادر التشريع الإسلامي؟", a: "الإجماع: اتفاق علماء الأمة على حكم — القياس: إلحاق مسألة جديدة بأصل معلوم الحكم لعلة مشتركة" },
+  ],
+
+  "🎬 سينما عالمية": [
+    { pts: 200, q: "من أخرج فيلم The Godfather عام ١٩٧٢؟", a: "فرانسيس فورد كوبولا" },
+    { pts: 200, q: "أي فيلم حصل على أكبر عدد من جوائز الأوسكار في تاريخ الحفل؟", a: "Ben Hur و Titanic و The Return of the King — كل منها فاز بـ١١ جائزة" },
+    { pts: 400, q: "ما اسم تقنية التصوير التي طوّرها كريستوفر نولان لفيلم Dunkirk وتعتمد على كاميرات IMAX بشكل كامل؟", a: "تصوير IMAX Film بكاميرات ١٥/٧٠ ملم ميكانيكية بالكامل" },
+    { pts: 400, q: "من هو المخرج الياباني صاحب فيلم Seven Samurai ١٩٥٤ الذي أثّر في معظم أفلام الحركة الغربية؟", a: "أكيرا كوروساوا" },
+    { pts: 600, q: "ما اسم الحركة السينمائية الفرنسية في الخمسينيات والستينيات التي ضمّت تروفو وغودار وما مبدأها النقدي الأساسي؟", a: "Nouvelle Vague — مبدأها: المخرج هو 'مؤلف' الفيلم (Auteur Theory)" },
+    { pts: 600, q: "في فيلم 2001: A Space Odyssey، ما الرمز الفلسفي الذي يُجسّده المونوليث الأسود وفق تفسير كوبريك؟", a: "أداة التطور — يُمثّل التدخل الخارجي (أو الإلهي) الذي يدفع الوعي للمرحلة التالية" },
+  ],
+
+  "⚽ رياضة عالمية": [
+    { pts: 200, q: "كم مرة فاز رونالدو بجائزة البالون دور؟", a: "٥ مرات" },
+    { pts: 200, q: "أي منتخب يحمل لقب أكثر الفائزين بكأس العالم؟", a: "البرازيل — ٥ بطولات" },
+    { pts: 400, q: "في أي سنة تأسّس نادي برشلونة ومن أسّسه؟", a: "١٨٩٩ — أسّسه يوهان غامبر مع مجموعة من اللاعبين الأجانب والمحليين" },
+    { pts: 400, q: "ما هي أطول سلسلة انتصارات متتالية في تاريخ دوري أبطال أوروبا لفريق واحد؟", a: "ريال مدريد فاز بـ٣ نسخ متتالية (٢٠١٦-٢٠١٨)" },
+    { pts: 600, q: "في كأس العالم ١٩٩٤، كيف حُسم النهائي بين البرازيل وإيطاليا وما النتيجة؟", a: "تعادل ٠-٠ بعد الوقتين الأصلي والإضافي — فازت البرازيل بركلات الترجيح ٣-٢ بعد تفويت باجيو للركلة الأخيرة" },
+    { pts: 600, q: "ما اسم الظاهرة الإحصائية المسماة Moneyball وفي أي رياضة طُبّقت أول مرة؟", a: "استخدام التحليل الإحصائي (Sabermetrics) لبناء الفرق بميزانية محدودة — طُبّقت في البيسبول مع فريق Oakland Athletics" },
+  ],
+
+  "🧬 علوم وطبيعة": [
+    { pts: 200, q: "ما العنصر الأكثر وفرة في الكون؟", a: "الهيدروجين" },
+    { pts: 200, q: "كم يبلغ سرعة الضوء في الفراغ تقريباً؟", a: "٣٠٠٬٠٠٠ كيلومتر في الثانية (٢٩٩٬٧٩٢٬٤٥٨ م/ث)" },
+    { pts: 400, q: "ما الفرق بين الانشطار النووي والاندماج النووي وأيهما يُستخدم في المفاعلات حالياً؟", a: "الانشطار: تكسير نواة ثقيلة — الاندماج: دمج نوى خفيفة وأكثر طاقة. المفاعلات الحالية تعتمد الانشطار" },
+    { pts: 400, q: "ما النظرية التي تُفسّر انتشار قارات الأرض ابتداءً من قارة واحدة؟", a: "نظرية انجراف القارات (Continental Drift) — طرحها ألفريد فيغنر ١٩١٢" },
+    { pts: 600, q: "ما مبدأ عدم اليقين لهايزنبرغ وما أثره على مفهوم الحتمية الفيزيائية الكلاسيكية؟", a: "يقول إن موضع الجسيم وكمية حركته لا يمكن معرفتهما بدقة معاً — يهدم الحتمية الكلاسيكية (نيوتن) ويُثبت أن العشوائية أصيلة في الطبيعة" },
+    { pts: 600, q: "ما التفسيرات الثلاثة الكبرى لميكانيكا الكم وأبرز خلافاتها؟", a: "كوبنهاغن (الموجة تنهار عند القياس) — عوالم متعددة (كل احتمال يتحقق في كون موازٍ) — المتغيرات الخفية (ديفيد بوم: الواقع محدد لكننا نجهله)" },
+  ],
+
+  "🌍 جغرافيا وعواصم العالم": [
+    { pts: 200, q: "ما عاصمة أستراليا؟", a: "كانبيرا — وليست سيدني أو ملبورن" },
+    { pts: 200, q: "ما أطول نهر في العالم؟", a: "النيل (٦٦٥٠ كم) — يُختلف فيه مع الأمازون" },
+    { pts: 400, q: "ما أصغر دولة في العالم مساحةً وأين تقع؟", a: "الفاتيكان — داخل روما، إيطاليا، ٠.٤٤ كم²" },
+    { pts: 400, q: "ما المضيق الذي يفصل بين آسيا وأمريكا الشمالية؟", a: "مضيق بيرينغ — يفصل روسيا عن ألاسكا بعرض ٨٢ كم" },
+    { pts: 600, q: "ما الدولة الوحيدة التي تمتلك حدوداً مع أكبر عدد من الدول الأخرى وكم عددها؟", a: "الصين — تحدّها ١٤ دولة" },
+    { pts: 600, q: "لماذا تُعدّ نيوزيلندا من الدول الأكثر عزلاً جيولوجياً وما الأثر التطوري لذلك؟", a: "انفصلت عن قارة غوندوانا منذ ٨٠ مليون سنة قبل ظهور الثدييات — أدى ذلك إلى تطور طيور لا تطير كالكيوي بدلاً من ثدييات مفترسة" },
+  ],
+
+  "🎵 موسيقى عالمية": [
+    { pts: 200, q: "من هو مؤلف سيمفونية رقم ٥ الشهيرة التي تبدأ بـ 'تا تا تا تاااا'؟", a: "لودفيغ فان بيتهوفن" },
+    { pts: 200, q: "في أي مدينة تأسّست فرقة The Beatles؟", a: "ليفربول — إنجلترا" },
+    { pts: 400, q: "ما الفرق بين موسيقى Jazz و Blues من حيث الأصل والبنية؟", a: "Blues نشأ في جنوب أمريكا من موسيقى العبيد — بنيته ١٢ مقياساً ثابتة. Jazz تطور منه في نيو أورليانز وأضاف الارتجال والتعقيد التناغمي" },
+    { pts: 400, q: "من هو المؤلف الموسيقي الذي كتب أوبرا 'ترافياتا' و'ريغوليتو' و'عايدة'؟", a: "جوزيبي فيردي" },
+    { pts: 600, q: "ما البنية الموسيقية المعروفة بـ 'Sonata Form' وكيف تتركب؟", a: "تتكون من: Exposition (عرض الثيمات) — Development (تطويرها) — Recapitulation (إعادتها) وأحياناً Coda للختام" },
+    { pts: 600, q: "ما الفرق بين المقام الكبير (Major) والمقام الصغير (Minor) موسيقياً ونفسياً؟", a: "Major يعتمد على نمط تدرج معين (W-W-H-W-W-W-H) ويُحدث إحساساً بالبهجة — Minor تدرجه مختلف ويُحدث إحساساً بالحزن أو الغموض" },
+  ],
+
+  "🍕 مطبخ عالمي": [
+    { pts: 200, q: "من أي بلد نشأت البيتزا تحديداً؟", a: "إيطاليا — نابولي تحديداً" },
+    { pts: 200, q: "ما المكوّن الرئيسي الذي يُميز المطبخ التايلاندي عن غيره؟", a: "التوازن بين الحامض والحلو والمالح والحار في طبق واحد — مع استخدام العشب والليمون وجوز الهند" },
+    { pts: 400, q: "ما الفرق بين Sushi و Sashimi في المطبخ الياباني؟", a: "Sushi: أرز مُتبّل مع مكونات متنوعة — Sashimi: شرائح سمك نيء فقط بدون أرز" },
+    { pts: 400, q: "من أي حضارة نشأت الباستا وكيف وصلت إلى إيطاليا؟", a: "الأصل محل جدل — قيل الصين عبر ماركو بولو، لكن الراجح أن إيطاليا طوّرتها بشكل مستقل أو عبر العرب في صقلية" },
+    { pts: 600, q: "ما تقنية Sous Vide في الطهي وما مزاياها العلمية على الطرق التقليدية؟", a: "طهي الطعام في كيس مفرغ الهواء داخل ماء بدرجة حرارة ثابتة ومنخفضة — تحافظ على العصارة والبروتين ولا تُجفّف اللحم كما في الشواء المباشر" },
+    { pts: 600, q: "ما الفرق الكيميائي بين التخمير (Fermentation) والتعفّن (Putrefaction) وكيف نُفرّق بينهما في الطعام؟", a: "التخمير: عملية لاهوائية محكومة بكائنات نافعة تنتج حمضاً أو كحولاً — التعفّن: تحلّل بروتيني بواسطة بكتيريا ضارة. المؤشر: التخمير يُعطي رائحة حامضة لاذعة، التعفّن رائحة كبريتية" },
+  ],
+
+  "📚 أدب عالمي": [
+    { pts: 200, q: "من كتب رواية '١٩٨٤'؟", a: "جورج أورويل" },
+    { pts: 200, q: "في رواية الأمير الصغير، من أي كوكب جاء الأمير الصغير؟", a: "الكوكب B-612" },
+    { pts: 400, q: "ما الرواية التي افتُتحت بجملة 'Call me Ishmael' وما موضوعها؟", a: "Moby Dick لهيرمان ملفيل — عن صياد حوت مهووس بقتل حوت أبيض ضخم" },
+    { pts: 400, q: "من هو الكاتب الكولومبي الحائز نوبل الآداب وما روايته الأشهر؟", a: "غابريال غارسيا ماركيز — رواية 'مئة عام من العزلة'" },
+    { pts: 600, q: "ما مفهوم 'الواقعية السحرية' وكيف يختلف عن الخيال العلمي والفانتازيا؟", a: "الواقعية السحرية تدمج العناصر السحرية في واقع يومي عادي دون استغراب — الفانتازيا تبني عالماً موازياً — والخيال العلمي يُبرر السحر علمياً" },
+    { pts: 600, q: "ما الفرق بين الراوي العليم والراوي المحدود في النظرية الأدبية وأثر ذلك على القارئ؟", a: "العليم: يعلم أفكار كل الشخصيات ويرى كل شيء — المحدود: مقيّد بمنظور شخصية واحدة، يخلق توتراً وغموضاً أكثر لأن القارئ محدود المعلومات" },
+  ],
+
+  "🏛️ تاريخ عالمي": [
+    { pts: 200, q: "في أي عام سقط جدار برلين؟", a: "١٩٨٩" },
+    { pts: 200, q: "من هو أول إنسان يمشي على القمر؟", a: "نيل أرمسترونغ — ١٩٦٩" },
+    { pts: 400, q: "ما أسباب اندلاع الثورة الفرنسية عام ١٧٨٩ وما شعارها الشهير؟", a: "الإفلاس المالي للدولة، والفوارق الطبقية الحادة، وتأثير التنوير. شعارها: حرية، مساواة، إخاء" },
+    { pts: 400, q: "من هو الإمبراطور الذي وحّد الصين لأول مرة عام ٢٢١ق.م وأسّس سلالة تشين؟", a: "تشين شي هوانغ — أمر ببناء سور الصين العظيم وحرق الكتب" },
+    { pts: 600, q: "ما الفرق الجوهري بين حرب الثلاثين سنة وحرب المئة سنة من حيث الطابع والأطراف؟", a: "حرب الثلاثين سنة (١٦١٨-١٦٤٨): صراع ديني-سياسي أوروبي أُنهي بمعاهدة وستفاليا. حرب المئة سنة (١٣٣٧-١٤٥٣): صراع إنجليزي-فرنسي على العرش انتهى بطرد إنجلترا من فرنسا" },
+    { pts: 600, q: "ما النظام الذي نشأ عن معاهدة وستفاليا ١٦٤٨ وكيف أثّر على العلاقات الدولية حتى اليوم؟", a: "النظام الوستفالي: مبدأ السيادة الوطنية وعدم التدخل في شؤون الدول — أسّس لمفهوم الدولة-الأمة الحديثة وهو حجر الزاوية في القانون الدولي حتى الآن" },
+  ],
+
+  "🧠 فلسفة وتفكير": [
+    { pts: 200, q: "ما المقصود بـ 'حلاقة أوكام' كمبدأ فلسفي؟", a: "لا تُضاعف الكيانات بدون ضرورة — اختر دائماً التفسير الأبسط" },
+    { pts: 200, q: "من قال 'أنا أفكر إذن أنا موجود'؟", a: "ريني ديكارت" },
+    { pts: 400, q: "ما الفرق بين الفلسفة العقلانية والتجريبية وأبرز ممثليها؟", a: "العقلانية: المعرفة مصدرها العقل (ديكارت، ليبنيز) — التجريبية: المعرفة مصدرها الحواس والتجربة (لوك، هيوم)" },
+    { pts: 400, q: "ما مشكلة 'عربة الترام' (Trolley Problem) وماذا تكشف فلسفياً؟", a: "اختيار بين التدخل لإنقاذ ٥ بقتل واحد أو عدم التدخل. تكشف التعارض بين الأخلاق النفعية (الأكبر خير) والأخلاق الواجبية (لا تقتل مطلقاً)" },
+    { pts: 600, q: "ما المقصود بـ 'أزمة المعنى' عند نيتشه وما فكرة 'الإنسان الأعلى' كحل لها؟", a: "بعد 'موت الإله' (أي انهيار القيم الدينية) يفقد الإنسان مصدر معناه — الإنسان الأعلى يخلق قيمه الخاصة بإرادة قوة بدلاً من الاتكاء على الخارج" },
+    { pts: 600, q: "ما الفرق بين الفلسفة الظاهراتية (Phenomenology) عند هوسرل وهيدغر؟", a: "هوسرل: دراسة الوعي والظواهر كما تبدو للعقل (Epoché) — هيدغر: الوجود في العالم (Dasein) أسبق من الوعي، الإنسان منغمس في العالم لا ناظر إليه" },
+  ],
+
+  "🤝 سياسة واقتصاد": [
+    { pts: 200, q: "ما الفرق بين النظام الرأسمالي والاشتراكي في ملكية وسائل الإنتاج؟", a: "الرأسمالية: ملكية خاصة — الاشتراكية: ملكية جماعية أو دولة" },
+    { pts: 200, q: "ما المقصود بـ GDP وما الفرق بينه وبين GNP؟", a: "GDP: قيمة الإنتاج داخل حدود الدولة — GNP: قيمة إنتاج مواطنيها أينما كانوا" },
+    { pts: 400, q: "ما نظرية 'اليد الخفية' عند آدم سميث وما نقدها الرئيسي؟", a: "السوق الحر يُنظّم نفسه تلقائياً عبر المصلحة الذاتية لصالح الجميع — النقد: تتجاهل الاحتكار وتفاوت القوة وتفشل في السلع العامة والخارجيات السلبية" },
+    { pts: 400, q: "ما هي 'فخ ثيوسيديدس' وكيف يُطبَّق على العلاقة بين الصين وأمريكا؟", a: "عندما تصعد قوة جديدة تهدد قوة قائمة، الحرب تصبح أرجح — يُطبّقها بعض المحللين على صعود الصين ومخاوف أمريكا من فقدان هيمنتها" },
+    { pts: 600, q: "ما الفرق بين السياسة النقدية والمالية وكيف تتفاعلان في أوقات الأزمات؟", a: "النقدية: يُديرها البنك المركزي عبر أسعار الفائدة والكتلة النقدية — المالية: تُديرها الحكومة عبر الإنفاق والضرائب. في الأزمات قد تتضارب إذا رفع المركزي الفائدة بينما تُوسّع الحكومة إنفاقها" },
+    { pts: 600, q: "ما نقطة الخلاف الجوهرية بين كينز وهايك حول دور الدولة في الاقتصاد؟", a: "كينز: الدولة يجب أن تتدخل لتحفيز الطلب في الركود — هايك: التدخل يُشوّه السعر ويُراكم عدم الكفاءة والحل هو السوق الحر والانكماش الطبيعي" },
+  ],
+};
+
+const CAT_NAMES = Object.keys(CATEGORIES);
+let t1Name = 'الفريق الأول', t2Name = 'الفريق التاني';
+let t1Score = 0, t2Score = 0;
+let selectedCats = [], boardData = [], currentCell = null;
+
+function buildSetup() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  const t1Selects = [], t2Selects = [];
+
+  for (let i = 0; i < 4; i++) {
+    const wrap1 = document.createElement('div');
+    wrap1.className = 'cat-item';
+    wrap1.innerHTML = `<div class="cat-team-label" style="color:var(--team1);font-size:11px;font-weight:700;letter-spacing:1px">الفريق الأول — ${i+1}</div>`;
+    const s1 = document.createElement('select');
+    s1.className = 'cat-select t1';
+    CAT_NAMES.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; s1.appendChild(o); });
+    s1.selectedIndex = i;
+    wrap1.appendChild(s1);
+    grid.appendChild(wrap1);
+    t1Selects.push(s1);
+
+    const wrap2 = document.createElement('div');
+    wrap2.className = 'cat-item';
+    wrap2.innerHTML = `<div class="cat-team-label" style="color:var(--team2);font-size:11px;font-weight:700;letter-spacing:1px">الفريق التاني — ${i+1}</div>`;
+    const s2 = document.createElement('select');
+    s2.className = 'cat-select t2';
+    CAT_NAMES.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; s2.appendChild(o); });
+    s2.selectedIndex = i + 4;
+    wrap2.appendChild(s2);
+    grid.appendChild(wrap2);
+    t2Selects.push(s2);
+  }
+
+  window._t1Selects = t1Selects;
+  window._t2Selects = t2Selects;
+}
+
+function startGame() {
+  t1Name = document.getElementById('team1-name').value.trim() || 'الفريق الأول';
+  t2Name = document.getElementById('team2-name').value.trim() || 'الفريق التاني';
+
+  const cats1 = window._t1Selects.map(s => s.value);
+  const cats2 = window._t2Selects.map(s => s.value);
+  const all = [...cats1, ...cats2];
+  if (new Set(all).size < 8) { alert('اختار ٨ كاتيجوري مختلفة!'); return; }
+
+  selectedCats = [...cats1.map(n => ({ name: n, team: 1 })), ...cats2.map(n => ({ name: n, team: 2 }))];
+
+  boardData = [];
+  selectedCats.forEach(({ name, team }) => {
+    CATEGORIES[name].forEach(q => {
+      boardData.push({ cat: name, team, pts: q.pts, q: q.q, a: q.a, used: false, winner: 0 });
+    });
+  });
+
+  t1Score = 0; t2Score = 0;
+  document.getElementById('t1-score-name').textContent = t1Name;
+  document.getElementById('t2-score-name').textContent = t2Name;
+  document.getElementById('t1-score-val').textContent = '0';
+  document.getElementById('t2-score-val').textContent = '0';
+  document.getElementById('give-t1').textContent = '✔ ' + t1Name;
+  document.getElementById('give-t2').textContent = '✔ ' + t2Name;
+
+  renderBoard();
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  document.getElementById('game-screen').style.flexDirection = 'column';
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  selectedCats.forEach(({ name, team }) => {
+    const h = document.createElement('div');
+    h.className = `cat-header t${team}`;
+    h.textContent = name;
+    board.appendChild(h);
+  });
+
+  [[0,1],[2,3],[4,5]].forEach(indices => {
+    indices.forEach(qi => {
+      selectedCats.forEach((_, ci) => {
+        const idx = ci * 6 + qi;
+        const item = boardData[idx];
+        const cell = document.createElement('div');
+        cell.className = `cell ${item.used ? 'used' : ''} ${item.winner === 1 ? 't1-won' : item.winner === 2 ? 't2-won' : ''}`;
+        cell.dataset.idx = idx;
+
+        const val = document.createElement('div');
+        val.className = `cell-val cell-val-${item.pts}`;
+        val.textContent = item.used ? (item.winner ? '✓' : '✗') : item.pts;
+        cell.appendChild(val);
+
+        if (item.used && item.winner) {
+          const dot = document.createElement('div');
+          dot.className = 'cell-dot';
+          cell.appendChild(dot);
+        }
+
+        if (!item.used) cell.onclick = () => openModal(idx);
+        board.appendChild(cell);
+      });
+    });
+  });
+
+  checkGameOver();
+}
+
+function openModal(idx) {
+  const item = boardData[idx];
+  currentCell = idx;
+  document.getElementById('modal-cat').textContent = item.cat;
+  document.getElementById('modal-pts').textContent = item.pts + ' نقطة';
+  document.getElementById('modal-pts').className = `modal-pts p${item.pts}`;
+  document.getElementById('modal-q').textContent = item.q;
+  document.getElementById('modal-ans').textContent = item.a;
+  document.getElementById('modal-ans').classList.remove('revealed');
+  document.getElementById('reveal-btn').style.display = 'block';
+  document.getElementById('score-btns').classList.remove('show');
+  document.getElementById('modal').classList.add('open');
+}
+
+function revealAnswer() {
+  document.getElementById('modal-ans').classList.add('revealed');
+  document.getElementById('reveal-btn').style.display = 'none';
+  document.getElementById('score-btns').classList.add('show');
+}
+
+function givePoint(team) {
+  const item = boardData[currentCell];
+  item.used = true; item.winner = team;
+  if (team === 1) { t1Score += item.pts; document.getElementById('t1-score-val').textContent = t1Score; }
+  else if (team === 2) { t2Score += item.pts; document.getElementById('t2-score-val').textContent = t2Score; }
+  closeModal(); renderBoard();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  currentCell = null;
+}
+
+function checkGameOver() {
+  if (boardData.every(b => b.used)) setTimeout(showResult, 400);
+}
+
+function showResult() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'flex';
+  document.getElementById('res-t1-name').textContent = t1Name;
+  document.getElementById('res-t2-name').textContent = t2Name;
+  document.getElementById('res-t1-val').textContent = t1Score;
+  document.getElementById('res-t2-val').textContent = t2Score;
+
+  let winner, emoji;
+  if (t1Score > t2Score) { winner = t1Name + ' فاز! 🎉'; emoji = '🏆'; }
+  else if (t2Score > t1Score) { winner = t2Name + ' فاز! 🎉'; emoji = '🏆'; }
+  else { winner = 'تعادل! 🤝'; emoji = '🤝'; }
+
+  document.getElementById('result-trophy').textContent = emoji;
+  document.getElementById('result-winner').textContent = winner;
+}
+
+buildSetup();
+</script>
+</body>
+</html>
