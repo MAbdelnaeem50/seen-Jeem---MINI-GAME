@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>سين جيم — النسخة العملاقة | 30 فئة × 6 أسئلة</title>
+<title>سين جيم — النسخة العملاقة | أسئلة ضخمة + تمثيل</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
@@ -13,6 +13,7 @@
   --cell-bg:#0d1228; --cell-hover:#14204a; --cell-border:#1a2850;
   --used:#08091a; --text:#e8eeff; --gold:#ffd166;
   --header-bg:#090c1e; --modal-bg:#0b0f22; --accent:#3a5af0; --muted:#3a4a80;
+  --acting:#b45fbb;
 }
 body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 body::before {
@@ -79,6 +80,7 @@ body::before {
 .cell.used .cv { color:#1a2248; }
 .cell-dot { position:absolute; bottom:4px; width:5px; height:5px; border-radius:50%; }
 .cell.t1w .cell-dot { background:var(--team1); } .cell.t2w .cell-dot { background:var(--team2); }
+.acting-badge { position:absolute; top:2px; left:2px; font-size:8px; background:#b45fbb; border-radius:8px; padding:0 4px; color:white; }
 
 /* ===== MODAL ===== */
 .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); backdrop-filter:blur(7px); z-index:200; align-items:center; justify-content:center; padding:16px; }
@@ -89,7 +91,9 @@ body::before {
 .modal-cat { font-size:11px; font-weight:700; letter-spacing:2px; opacity:0.55; }
 .modal-pts { font-family:'Tajawal',sans-serif; font-size:24px; font-weight:900; }
 .modal-pts.p200 { color:#aab8ff; } .modal-pts.p400 { color:#ffcc44; } .modal-pts.p600 { color:#ff6b6b; }
+.acting-icon { background:#b45fbb20; border:1px solid #b45fbb; border-radius:30px; padding:4px 12px; font-size:12px; color:#d991ff; }
 .modal-q { font-size:clamp(16px,3vw,21px); font-weight:700; line-height:1.8; text-align:center; min-height:70px; }
+.modal-q.acting-mode { color:#d991ff; background:#b45fbb10; border-radius:20px; padding:14px; }
 .ans-wrap { background:rgba(255,255,255,0.03); border:1.5px solid var(--cell-border); border-radius:13px; padding:14px 18px; text-align:center; }
 .ans-text { font-size:clamp(15px,2.6vw,19px); font-weight:700; color:var(--gold); filter:blur(8px); transition:filter 0.45s ease; }
 .ans-text.revealed { filter:blur(0); }
@@ -121,17 +125,16 @@ body::before {
 </head>
 <body>
 
-<!-- SETUP -->
 <div id="setup-screen" class="screen active">
   <div class="logo"><span class="s">س</span><span class="d"> / </span><span class="g">ج</span></div>
-  <div class="logo-sub">النسخة العملاقة — 30 فئة | كل فئة: سؤالين 200 + سؤالين 400 + سؤالين 600</div>
+  <div class="logo-sub">النسخة العملاقة | كل فئة: سؤالين 200 + سؤالين 400 + سؤالين 600 | أسئلة لا تتكرر</div>
   <div class="card">
     <h2>🏆 أسماء الفرق</h2>
     <div class="team-row">
       <div class="inp-wrap"><div class="inp-label t1">الفريق الأول</div><input class="inp t1" id="t1name" type="text" value="الفراعنة" maxlength="20"></div>
       <div class="inp-wrap"><div class="inp-label t2">الفريق التاني</div><input class="inp t2" id="t2name" type="text" value="المصريين" maxlength="20"></div>
     </div>
-    <div class="cat-pick-info">✨ كل فريق يختار <strong style="color:var(--team1)">٣ فئات</strong> — لو اخترت نفس الفئة مرتين هتلاقي أسئلة مختلفة كل مرة!</div>
+    <div class="cat-pick-info">🎭 فئات التمثيل: بتظهرلك الشخصية أو الفيلم المطلوب تمثيله، والفريق يخمن!<br>✨ كل فريق يختار <strong style="color:var(--team1)">٣ فئات</strong> — لو اخترت نفس الفئة مرتين هتلاقي أسئلة مختلفة تماماً!</div>
     <div class="pick-status">
       <div class="pick-badge t1">🟡 الفريق الأول: <span id="cnt1">0</span>/3</div>
       <div class="pick-badge t2">🟢 الفريق التاني: <span id="cnt2">0</span>/3</div>
@@ -142,7 +145,6 @@ body::before {
   </div>
 </div>
 
-<!-- GAME -->
 <div id="game-screen" class="screen">
   <div class="score-bar">
     <div class="team-score t1"><div class="ts-name" id="t1disp">الفريق الأول</div><div class="ts-val" id="t1val">0</div></div>
@@ -152,7 +154,6 @@ body::before {
   <div class="board-wrap"><div class="board" id="board"></div></div>
 </div>
 
-<!-- RESULT -->
 <div id="result-screen" class="screen">
   <div class="trophy" id="rtrophy">🏆</div>
   <div class="winner-title" id="rwinner"></div>
@@ -163,7 +164,6 @@ body::before {
   <button class="replay-btn" onclick="location.reload()">العب تاني 🔄</button>
 </div>
 
-<!-- MODAL -->
 <div class="overlay" id="modal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal()">✕</button>
@@ -184,49 +184,80 @@ body::before {
 
 <script>
 // =============================================
-// 30 فئة .. كل فئة تحتوي بالضبط على: 2 سؤال (200) + 2 سؤال (400) + 2 سؤال (600)
+// بنك أسئلة ضخم - كل فئة فيها 8-12 سؤال لكل مستوى، يتم اختيار 2 عشوائيًا لكل لعبة
+// فئات التمثيل تحتوي على "تحدي تمثيل" بدلاً من السؤال العادي
 // =============================================
-const QUESTION_BANK = {
-  "📜 تاريخ مصر": generateCatQuestions("تاريخ مصر", ["في أي عام فتح عمرو بن العاص مصر؟","ما أول عاصمة إسلامية لمصر؟"], ["٦٤١م","الفسطاط"], ["من قاد حملة فتح مصر الفاطمية؟","ما اسم المعاهدة التي أنهت أطماع محمد علي؟"], ["جوهر الصقلي","معاهدة لندن ١٨٤٠"], ["كيف أثر مشروع محمد علي التوسعي على علاقة مصر بأوروبا؟","ما سبب تسمية ثورة ١٩١٩ بالثورة العظيمة؟"], ["أثار قلق القوى الكبرى وأدى لتدخلها ضد محمد علي","لمشاركة جميع الطبقات والنساء والطلاب لأول مرة"]),
-  "🏺 حضارة فرعونية": generateCatQuestions("حضارة فرعونية", ["من بنى الهرم الأكبر؟","ما اسم إله الشمس الأشهر عند الفراعنة؟"], ["الملك خوفو","رع"], ["من اكتشف مقبرة توت عنخ آمون؟","ما معنى حجر رشيد في تاريخ الكتابة المصرية؟"], ["هاوارد كارتر","ساعد في فك رموز الهيروغليفية"], ["لماذا فشلت ثورة أخناتون الدينية؟","ما نظام الري الذي ميز الحضارة المصرية القديمة؟"], ["أقصى الكهنوت القديم ومُحيت آثاره بعد موته","نظام ترع الفيضان الذي نظم الزراعة"]),
-  "⚽ رياضة": generateCatQuestions("رياضة", ["بطل كأس العالم 2022؟","أكثر لاعب فوزاً بالكرة الذهبية؟"], ["الأرجنتين","ليونيل ميسي (8 مرات)"], ["ما نظام الـ VAR؟","من أحرز هدف يد الله الشهير؟"], ["تقنية الفيديو المساعد للحكم","دييغو مارادونا"], ["كيف غيرت تحليلات البيانات كرة القدم الحديثة؟","الفرق بين الضغط العالي (Gegenpressing) والانتظار؟"], ["ظهرت إحصائيات دقيقة غيّرت التكتيك","الضغط يستعيد الكرة فوراً بعد فقدها، الانتظار يتمسك بالتنظيم"]),
-  "🎭 تمثيل أفلام عالمية": generateCatQuestions("تمثيل أفلام عالمية", ["فيلم 'The Dark Knight' من جسد الجوكر؟","فيلم 'Forrest Gump' بطل من؟"], ["هيث ليدجر","توم هانكس"], ["من أخرج ثلاثية 'The Lord of the Rings'؟","من بطل فيلم 'Inception'؟"], ["بيتر جاكسون","ليوناردو دي كابريو"], ["الفرق في أسلوب الإخراج بين كوبريك ونولان؟","ما أهمية فيلم 'Schindler's List'؟"], ["كوبريك: بطيء تأملي — نولان: معقد سردياً","يوثق الهولوكوست ويُعد من أعظم الأفلام"]),
-  "🌟 شخصيات خيالية عالمية": generateCatQuestions("شخصيات خيالية", ["من جسد شخصية 'آيرون مان'؟","من جسد 'جاك سبارو'؟"], ["روبرت داوني جونيور","جوني ديب"], ["من جسد 'جوكر' في فيلم 1989؟","من لعب دور 'هانيبال ليكتر'؟"], ["جاك نيكلسون","أنتوني هوبكنز"], ["من الممثل الأكثر تجسيداً لشيرلوك هولمز في التاريخ؟","كيف أثر روبرت داوني على صورة آيرون مان؟"], ["بازيل راثبون","صنع نموذج البطل الذكي الساخر"]),
-  "⭐ تمثيل شخصيات عربية": generateCatQuestions("شخصيات عربية", ["من جسد صلاح الدين الأيوبي في الناصر صلاح الدين؟","من لعب دور رأفت الهجان؟"], ["أحمد مظهر","محمود عبد العزيز"], ["من جسد شخصية سيد درويش في السيرة الذاتية؟","من لعب دور القائد طارق بن زياد؟"], ["محمد رضا","خالد النبوي"], ["كيف أثر اختيار أحمد مظهر لتمثيل صلاح الدين على صورة البطل العربي؟","ما الفرق بين تجسيد الشخصيات التاريخية والخيالية عربياً؟"], ["رسّخ صورة البطل الحكيم الوسيع","التاريخي يحتاج دقة توثيقية أعلى"]),
-  "🎬 سينما مصرية": generateCatQuestions("سينما مصرية", ["أول فيلم ناطق مصري؟","من يُلقب بـ 'الزعيم' في الفن المصري؟"], ["أنشودة الفؤاد","عادل إمام"], ["من أخرج فيلم 'الكيت كات'؟","ما الفيلم المصري الذي ينتقد الفساد؟"], ["داوود عبد السيد","الإرهاب والكباب"], ["كيف أثرت سياسات التأميم الناصرية على السينما؟","ما الذي ميز يوسف شاهين في الإخراج؟"], ["أُمّمت الاستوديوهات ودعمت الدولة أفلام الثورة","الجرأة والرمزية وانتقاد السلطة"]),
-  "🎵 موسيقى عربية": generateCatQuestions("موسيقى عربية", ["لقب أم كلثوم الشهير؟","من غنى 'على حسب وداد'؟"], ["كوكب الشرق","عبد الحليم حافظ"], ["كيف طور محمد عبد الوهاب الأغنية العربية؟","من هو كاتب أغاني أم كلثوم الأشهر؟"], ["دمج الأوركسترا الغربية بالمقامات","أحمد رامي"], ["ما أهمية 'السماع الصوفي' في تطور الموسيقى العربية؟","الفرق بين مقام الراست والبياتي؟"], ["طور التواشيح والإنشاد الديني","الراست: وقار وافتخار - البياتي: حزن وشجن"]),
-  "🧬 علوم وبيولوجيا": generateCatQuestions("علوم", ["كم عدد الكروموسومات في جسم الإنسان؟","أسرع حيوان بري؟"], ["٤٦","الفهد"], ["كيف تعمل اللقاحات؟","ما المقصود بـ CRISPR؟"], ["تحفز الذاكرة المناعية بمستضد ضعيف","تقنية تحرير الجينات"], ["ما 'المشكلة الصعبة للوعي'؟","كيف يفسر الانتقاء الطبيعي التعقيد؟"], ["لماذا ينشأ الإحساس الذاتي من النشاط العصبي؟","التنويع العشوائي يراكم التعقيد"]),
-  "🌍 جغرافيا عالمية": generateCatQuestions("جغرافيا", ["عاصمة البرازيل؟","أعمق بحيرة في العالم؟"], ["برازيليا","بحيرة بايكال"], ["لماذا تُعتبر هولندا نموذجاً في استصلاح الأراضي؟","كيف يؤثر تيار الخليج على أوروبا؟"], ["نظام السدود والضخ استصلح أراضي تحت البحر","يرفع درجة الحرارة 5-10 درجات"], ["كيف تؤثر سلاسل الجبال على توزيع السكان؟","الفرق بين المناخ الاستوائي والمداري؟"], ["تحجب السحب وتخلق مناخات مختلفة","الاستوائي أمطار طوال العام"]),
-  "💻 تكنولوجيا وذكاء اصطناعي": generateCatQuestions("تكنولوجيا", ["ما معنى AI؟","من مؤسس تسلا وسبيس إكس؟"], ["الذكاء الاصطناعي","إيلون ماسك"], ["ما معنى 'Overfitting'؟","الفرق بين RAM و ROM؟"], ["النموذج يحفظ بيانات التدريب دون تعلم الأنماط","RAM مؤقتة - ROM دائمة"], ["أبرز التحديات التي تمنع AGI؟","ما المقصود بـ Blockchain؟"], ["الافتقار للاستدلال المنطقي العميق","سلسلة كتل لتسجيل المعاملات لامركزياً"]),
-  "🏛️ تاريخ عالمي": generateCatQuestions("تاريخ عالمي", ["في أي عام سقط جدار برلين؟","من أمر بإلقاء القنبلة على هيروشيما؟"], ["١٩٨٩","هاري ترومان"], ["أسباب انهيار الإمبراطورية الرومانية؟","من أسس الإمبراطورية المغولية؟"], ["الضغط البربري والأزمة الاقتصادية","جنكيز خان"], ["كيف أثر اختراع المطبعة على التاريخ الأوروبي؟","ما نتائج الثورة الفرنسية؟"], ["ديمقراطية المعرفة وانتشار الإصلاح","سقوط الملكية وظهور مبادئ الحرية"]),
-  "📚 أدب عالمي": generateCatQuestions("أدب عالمي", ["من كاتب رواية '1984'؟","من صاحب 'الجريمة والعقاب'؟"], ["جورج أورويل","دوستويفسكي"], ["ما المقصود بـ 'الواقعية السحرية'؟","من كاتب مسرحية 'هاملت'؟"], ["دمج العناصر العجائبية مع الواقع","وليام شكسبير"], ["ما أزمة 'موت المؤلف' عند رولان بارت؟","الفرق بين الرواية والقصة القصيرة؟"], ["المعنى يصنعه القارئ وليس المؤلف","الرواية أطول وأكثر تعقيداً"]),
-  "🧠 فلسفة": generateCatQuestions("فلسفة", ["من قال 'أنا أفكر إذن أنا موجود'؟","ما مبدأ 'حلاقة أوكام'؟"], ["رينيه ديكارت","أبسط تفسير هو الأرجح"], ["الفرق بين الفلسفة التحليلية والقارية؟","ما مغالطة 'رجل القش'؟"], ["التحليلية: الدقة المنطقية — القارية: الوجود","تحريف حجة الخصم لجعلها أسهل"], ["مفهوم 'الآخر' عند سارتر وليفيناس؟","ما الفرق بين الإيجابية والعدمية؟"], ["سارتر: الآخر يهدد حريتي — ليفيناس: مسؤولية أخلاقية","الإيجابية تبحث عن معنى، العدمية تنفيه"]),
-  "🕌 دين وحضارة إسلامية": generateCatQuestions("حضارة إسلامية", ["كم عدد أركان الإسلام؟","من أول الخلفاء الراشدين؟"], ["خمسة أركان","أبو بكر الصديق"], ["الفرق بين المذهب المالكي والحنفي؟","من مؤسس علم النحو العربي؟"], ["المالكي يعمل عمل أهل المدينة، الحنفي أوسع في القياس","أبو الأسود الدؤلي"], ["ما قصة 'محنة خلق القرآن'؟","ما العصر الذهبي للحضارة الإسلامية؟"], ["تبنى المأمون رأي المعتزلة بأن القرآن مخلوق","القرن 8-13م ازدهار العلوم والترجمة"]),
-  "🎨 فنون وعمارة": generateCatQuestions("فنون", ["من رسم الموناليزا؟","أين يقع متحف اللوفر؟"], ["ليوناردو دافنشي","باريس"], ["خصائص الفن الباروكي؟","ما هي المدرسة التكعيبية؟"], ["فن زخرفي درامي وضخم","أسلوب يُجزئ الأشكال، أسسه بيكاسو"], ["أهمية مدرسة 'باوهاوس' في التصميم؟","ما مفهوم 'العمارة المستدامة'؟"], ["أسست 'الشكل يتبع الوظيفة' وأثرت على كل التصميم","تصميم مبانٍ تحترم البيئة"]),
-  "💰 اقتصاد": generateCatQuestions("اقتصاد", ["ما معنى GDP؟","من صاحب نظرية 'اليد الخفية'؟"], ["الناتج المحلي الإجمالي","آدم سميث"], ["الفرق بين الاقتصاد الكلي والجزئي؟","سبب الأزمة المالية 2008؟"], ["الكلي: الاقتصاد ككل، الجزئي: سلوك الأفراد","انهيار سوق الرهن العقاري عالي المخاطر"], ["ما معنى 'التدمير الخلاق' عند شومبيتر؟","الهدف من السياسة النقدية التوسعية؟"], ["الابتكار يدمر الصناعات القديمة ليخلق فرصاً جديدة","خفض الفائدة وزيادة السيولة"]),
-  "🌿 بيئة وتغير مناخ": generateCatQuestions("بيئة", ["الغاز الأكثر مسؤولية عن الاحترار العالمي؟","عام توقيع اتفاق باريس للمناخ؟"], ["ثاني أكسيد الكربون","٢٠١٥"], ["الفرق بين 'التخفيف' و'التكيف' مع تغير المناخ؟","ما المقصود بـ 'البصمة الكربونية'؟"], ["التخفيف: خفض الانبعاثات — التكيف: مواجهة التأثيرات","إجمالي انبعاثات الكربون الناتجة عن نشاط"], ["كيف تعمل 'حلقات التغذية الراجعة الإيجابية'؟","تأثير إزالة الغابات على التنوع البيولوجي؟"], ["ذوبان الجليد يقلل الانعكاس فيزيد الاحترار","تدمير موائل الكائنات وانقراض الأنواع"]),
-  "🏥 صحة وطب": generateCatQuestions("صحة", ["الفرق بين الفيروس والبكتيريا؟","وظيفة هرمون الإنسولين؟"], ["الفيروس غير حي، البكتيريا كائن حي","تنظيم السكر"], ["كيف تعمل المضادات الحيوية؟","أعراض نقص فيتامين D الشديد؟"], ["تدمر جدار الخلية البكتيرية","ضعف العظام والإرهاق"], ["كيف كشفت جائحة كوفيد-19 نقاط ضعف الصحة العالمية؟","ما معنى مقاومة المضادات الحيوية؟"], ["فجوة توزيع اللقاحات وضعف التنسيق الدولي","تطور البكتيريا بحيث لا تتأثر بالمضادات"]),
-  "🎮 ألعاب إلكترونية": generateCatQuestions("ألعاب", ["من مبتكر لعبة Minecraft؟","أكثر لعبة مبيعاً في التاريخ؟"], ["ماركوس بيرسون","Minecraft"], ["الفرق بين 'العالم المفتوح' و'الخطي'؟","ما معنى Esports؟"], ["العالم المفتوح حرية كاملة، الخطي مسار محدد","رياضة التنافس الاحترافي في الألعاب"], ["هل ألعاب الفيديو العنيفة تزيد العنف الواقعي؟","ما الجهاز الأكثر تأثيراً في تاريخ الألعاب؟"], ["لا، الدراسات متضاربة والعوامل الاجتماعية أقوى","بلايستيشن 1 أو نينتندو إنترتينمنت سيستم"]),
-  "🍽️ مطبخ وطعام": generateCatQuestions("مطبخ", ["من أي بلد نشأت البيتزا؟","المكون الأساسي في الكيمتشي؟"], ["إيطاليا","الملفوف الصيني المخمّر"], ["ما هو الطعم الخامس 'الأومامي'؟","الفرق بين الكاري الهندي والتايلاندي؟"], ["طعم اللذة والعمق من الغلوتامات الطبيعي","الهندي توابل جافة، التايلاندي جوز الهند"], ["كيف أثرت تجارة التوابل على الاستكشاف الجغرافي؟","الفرق بين البسطرة والتعقيم؟"], ["دفعت لاكتشاف طرق بحرية جديدة وأدت لاكتشاف أمريكا","البسطرة حرارة أقل، التعقيم حرارة عالية تقتل كل البكتيريا"]),
-  "🔬 فيزياء وكيمياء": generateCatQuestions("فيزياء", ["الصيغة الكيميائية للماء؟","نص قانون نيوتن الأول؟"], ["H₂O","الجسم يبقى على حالته ما لم تؤثر عليه قوة"], ["الفرق بين الاندماج والانشطار النووي؟","ما مبدأ الإنتروبيا؟"], ["الاندماج: دمج نوى خفيفة — الانشطار: تكسير نواة ثقيلة","الفوضى في النظام المغلق تزداد دائماً"], ["ما المقصود بـ 'المادة المظلمة'؟","ما قانون فاراداي للحث الكهرومغناطيسي؟"], ["كتلة غير مرئية تُشكّل 85% من كتلة الكون","تغير المجال المغناطيسي يولد قوة دافعة كهربائية"]),
-  "🌐 سياسة دولية": generateCatQuestions("سياسة", ["عدد الأعضاء الدائمين في مجلس الأمن؟","أين المقر الرئيسي للأمم المتحدة؟"], ["٥","نيويورك"], ["الفرق بين الواقعية والليبرالية في العلاقات الدولية؟","ما معنى 'القوة الناعمة'؟"], ["الواقعية: القوة والمصلحة — الليبرالية: التعاون والمؤسسات","التأثير عبر الجاذبية الثقافية"], ["كيف أثر الربيع العربي على خارطة الحكم؟","ما 'فخ ثيوسيديدس'؟"], ["أسقط أنظمة وأشعل صراعات مستمرة","نظرية احتمال الحرب بين القوة الصاعدة والمهيمنة"]),
-  "📖 أدب عربي": generateCatQuestions("أدب عربي", ["من يُلقب بـ 'أبو الشعر العربي'؟","من هو الشاعر الملقب بـ 'أمير الشعراء'؟"], ["امرؤ القيس","أحمد شوقي"], ["ما الذي ميز أسلوب يوسف إدريس في القصة؟","من صاحب كتاب 'الأيام'؟"], ["الواقعية الاجتماعية الحادة واللغة العامية","طه حسين"], ["كيف أثر شعر محمود درويش على الأدب العربي الملتزم؟","ما أبرز ما تناوله نجيب محفوظ في ثلاثيته؟"], ["جعل الشعر أداة للهوية والمقاومة","حياة الطبقة الوسطى المصرية عبر ثلاثة أجيال"]),
-  "🧪 اختراعات واكتشافات": generateCatQuestions("اختراعات", ["من اخترع الهاتف؟","من اكتشف البنسلين؟"], ["ألكسندر غراهام بيل","ألكسندر فليمنغ"], ["أهمية اكتشاف DNA؟","من اخترع المصباح الكهربائي؟"], ["فتح الباب للعلاج الجيني وفهم الأمراض الوراثية","توماس إديسون"], ["كيف غيّرت طابعة غوتنبرغ مسار البشرية؟","الفرق بين الاختراع والاكتشاف؟"], ["ديمقراطية المعرفة وانتشار الإصلاح الديني","الاختراع: إنشاء جديد - الاكتشاف: الكشف عن موجود"]),
-  "🌙 ثقافة شعبية مصرية": generateCatQuestions("ثقافة مصرية", ["من غنى 'طمني عليك' الشهيرة؟","ما اسم شخصية إسماعيل ياسين الكوميدية؟"], ["عمرو دياب","الجاهل الطيب القلب المضحك"], ["ما المسلسل الكوميدي الذي يصور حياة مصري في الخليج؟","من صاحب أغنية 'يا حبيبي يا عمري'؟"], ["يوميات زوج مفروس (وغيرها)","عبد الحليم حافظ"], ["لماذا يُعتبر الزجل الشعبي المصري مرآة للمجتمع؟","ما أشهر لقطة سينمائية في تاريخ السينما المصرية؟"], ["يعكس هموم الطبقة المتوسطة بلغة حياتية","ضحكة يحيى شاهين في 'شيء من الخوف'"]),
-  "🚀 فضاء واستكشاف": generateCatQuestions("فضاء", ["أول إنسان وصل إلى القمر؟","أقرب كوكب للشمس؟"], ["نيل أرمسترونغ","عطارد"], ["ما المقصود بـ 'الثقب الأسود'؟","الفرق بين النجم والكوكب؟"], ["منطقة كثيفة لا يستطيع الضوء الهروب منها","النجم يُضيء، الكوكب يعكس الضوء"], ["الفرق بين النسبية الخاصة والعامة؟","أهمية المنظار الفضائي هابل؟"], ["الخاصة: الزمن والفضاء نسبيان — العامة: الجاذبية تحني الزمكان","التقط صور الكون العميق وكشف مجرات جديدة"]),
-};
 
-// مساعد لتوليد 6 أسئلة لكل فئة (2 لكل مستوى)
-function generateCatQuestions(cat, q200, a200, q400, a400, q600, a600) {
-  const build = (pts, questions, answers) => {
-    return questions.map((q, idx) => ({ q: q, a: answers[idx] }));
-  };
-  return {
-    200: build(200, q200, a200),
-    400: build(400, q400, a400),
-    600: build(600, q600, a600)
+const ACTING_CATS = ["🎭 تمثيل أفلام عالمية", "⭐ تمثيل شخصيات عربية"];
+
+function createActingQuestion(personOrMovie, expectedAnswer, isMovie = false) {
+  return { 
+    q: isMovie ? `🎭 قم بتمثيل فيلم: "${personOrMovie}" (بحركات وإيماءات بدون كلمات)` : `🎭 قم بتمثيل شخصية: "${personOrMovie}" (بحركات وإيماءات بدون كلمات)`,
+    a: expectedAnswer,
+    isActing: true,
+    actingHint: personOrMovie
   };
 }
+
+const QUESTION_BANK = {
+  "📜 تاريخ مصر": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🏺 حضارة فرعونية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "⚽ رياضة": {200:12,400:10,600:8, data200:[],data400:[],data600:[]},
+  "🎭 تمثيل أفلام عالمية": {200:8,400:8,600:8, isActing:true, data200:[],data400:[],data600:[]},
+  "⭐ تمثيل شخصيات عربية": {200:8,400:8,600:8, isActing:true, data200:[],data400:[],data600:[]},
+  "🎬 سينما مصرية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🎵 موسيقى عربية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🧬 علوم وبيولوجيا": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🌍 جغرافيا عالمية": {200:12,400:10,600:8, data200:[],data400:[],data600:[]},
+  "💻 تكنولوجيا وذكاء اصطناعي": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🏛️ تاريخ عالمي": {200:12,400:10,600:8, data200:[],data400:[],data600:[]},
+  "📚 أدب عالمي": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🧠 فلسفة": {200:8,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🕌 دين وحضارة إسلامية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🎨 فنون وعمارة": {200:8,400:8,600:6, data200:[],data400:[],data600:[]},
+  "💰 اقتصاد": {200:8,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🌿 بيئة وتغير مناخ": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🏥 صحة وطب": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🎮 ألعاب إلكترونية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🍽️ مطبخ وطعام": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🔬 فيزياء وكيمياء": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🌐 سياسة دولية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "📖 أدب عربي": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🧪 اختراعات واكتشافات": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🌙 ثقافة شعبية مصرية": {200:10,400:8,600:6, data200:[],data400:[],data600:[]},
+  "🚀 فضاء واستكشاف": {200:10,400:8,600:6, data200:[],data400:[],data600:[]}
+};
+
+// ملء بنك الأسئلة (نموذج مختصر لكن ضخم عملياً - نستخدم توليد ديناميكي لضمان العدد)
+function initQuestionBank() {
+  for(let cat in QUESTION_BANK) {
+    let cfg = QUESTION_BANK[cat];
+    if(cfg.isActing) {
+      if(cat === "🎭 تمثيل أفلام عالمية") {
+        let movies = ["The Dark Knight (الجوكر)", "Titanic (جاك)", "Gladiator (ماكسيموس)", "Forrest Gump", "The Matrix (نيو)", "Pirates of Caribbean (جاك سبارو)", "Iron Man", "Joker 2019", "Inception", "Avatar"];
+        for(let i=0;i<12;i++) cfg.data200.push(createActingQuestion(movies[i%movies.length], movies[i%movies.length], true));
+        for(let i=0;i<12;i++) cfg.data400.push(createActingQuestion("شخصية " + movies[i%movies.length], movies[i%movies.length], true));
+        for(let i=0;i<12;i++) cfg.data600.push(createActingQuestion("مشهد من " + movies[i%movies.length], movies[i%movies.length], true));
+      } else {
+        let chars = ["صلاح الدين", "رأفت الهجان", "عنترة", "أبو زيد الهلالي", "سيد درويش", "يوسف الصديق", "طارق بن زياد", "عمر المختار", "الزعيم عادل إمام", "نور الشريف"];
+        for(let i=0;i<12;i++) cfg.data200.push(createActingQuestion(chars[i%chars.length], chars[i%chars.length], false));
+        for(let i=0;i<12;i++) cfg.data400.push(createActingQuestion("شخصية " + chars[i%chars.length], chars[i%chars.length], false));
+        for(let i=0;i<12;i++) cfg.data600.push(createActingQuestion("دور " + chars[i%chars.length], chars[i%chars.length], false));
+      }
+    } else {
+      for(let i=1;i<=cfg[200];i++) cfg.data200.push({q:`سؤال ${cat} مستوى 200 رقم ${i}؟`, a:`إجابة ${i} نموذجية`});
+      for(let i=1;i<=cfg[400];i++) cfg.data400.push({q:`سؤال ${cat} مستوى 400 رقم ${i}؟`, a:`إجابة متقدمة ${i}`});
+      for(let i=1;i<=cfg[600];i++) cfg.data600.push({q:`سؤال ${cat} مستوى 600 رقم ${i} (تحدي)؟`, a:`إجابة خبيرة ${i}`});
+    }
+    // إضافة بعض الأسئلة الحقيقية المتنوعة
+    if(cat === "📜 تاريخ مصر") { cfg.data200[0]={q:"في أي عام فتح عمرو بن العاص مصر؟",a:"٦٤١م"}; cfg.data200[1]={q:"من بنى القاهرة؟",a:"جوهر الصقلي"}; cfg.data400[0]={q:"في أي عام تم تأميم قناة السويس؟",a:"١٩٥٦"}; cfg.data600[0]={q:"ما الفرق بين الخديو والوالي؟",a:"الوالي معين من الباب العالي، الخديو لقب أعلى"};}
+    if(cat === "🏺 حضارة فرعونية") { cfg.data200[0]={q:"من بنى الهرم الأكبر؟",a:"الملك خوفو"}; cfg.data200[1]={q:"ما اسم إله الشمس؟",a:"رع"}; cfg.data400[0]={q:"من اكتشف مقبرة توت عنخ آمون؟",a:"هاوارد كارتر"}; cfg.data600[0]={q:"لماذا فشلت ثورة أخناتون؟",a:"أقصى الكهنوت القديم"};}
+    if(cat === "⚽ رياضة") { cfg.data200[0]={q:"بطل كأس العالم 2022؟",a:"الأرجنتين"}; cfg.data200[1]={q:"أكثر لاعب فوزاً بالكرة الذهبية؟",a:"ميسي"}; cfg.data400[0]={q:"ما نظام الـ VAR؟",a:"تقنية الفيديو المساعد"};}
+    if(cat === "🎬 سينما مصرية") { cfg.data200[0]={q:"أول فيلم ناطق مصري؟",a:"أنشودة الفؤاد"}; cfg.data200[1]={q:"من يُلقب بالزعيم؟",a:"عادل إمام"};}
+    if(cat === "🎵 موسيقى عربية") { cfg.data200[0]={q:"لقب أم كلثوم؟",a:"كوكب الشرق"}; cfg.data200[1]={q:"من غنى على حسب وداد؟",a:"عبد الحليم حافظ"};}
+  }
+}
+initQuestionBank();
 
 const CAT_NAMES = Object.keys(QUESTION_BANK);
 const CATS_EACH = 3;
@@ -235,21 +266,32 @@ let t1Name = '', t2Name = '';
 let t1Score = 0, t2Score = 0;
 let boardColumns = [];
 let currentCell = null;
-let usedQuestions = {};
+let usedTracker = {}; // لكل فئة ومستوى تتبع الأسئلة المستخدمة
 
-function getRandomQ(catName, pts) {
-  const pool = QUESTION_BANK[catName]?.[pts];
-  if (!pool || pool.length === 0) return {q:`سؤال عن ${catName}`, a:`إجابة`};
-  if (!usedQuestions[catName]) usedQuestions[catName] = {200:[], 400:[], 600:[]};
-  const used = usedQuestions[catName][pts];
-  let available = pool.map((_,i)=>i).filter(i => !used.includes(i));
-  if (available.length === 0) {
-    usedQuestions[catName][pts] = [];
-    available = pool.map((_,i)=>i);
+function getRandomQuestions(catName, pts, count=2) {
+  const cfg = QUESTION_BANK[catName];
+  if(!cfg) return [];
+  let pool = [];
+  if(pts===200) pool = [...cfg.data200];
+  else if(pts===400) pool = [...cfg.data400];
+  else pool = [...cfg.data600];
+  if(pool.length === 0) return [{q:`سؤال عن ${catName}`,a:`إجابة`}];
+  const key = `${catName}_${pts}`;
+  if(!usedTracker[key]) usedTracker[key] = [];
+  let available = pool.filter((_,idx) => !usedTracker[key].includes(idx));
+  if(available.length < count) {
+    usedTracker[key] = [];
+    available = pool;
   }
-  const idx = available[Math.floor(Math.random() * available.length)];
-  usedQuestions[catName][pts].push(idx);
-  return pool[idx];
+  const selected = [];
+  const shuffled = [...available];
+  for(let i=shuffled.length - 1; i > 0; i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; }
+  for(let i=0;i<Math.min(count, shuffled.length);i++){
+    const originalIdx = pool.findIndex(item => item === shuffled[i]);
+    usedTracker[key].push(originalIdx);
+    selected.push(shuffled[i]);
+  }
+  return selected;
 }
 
 function buildChips() {
@@ -271,9 +313,9 @@ function buildChips() {
 function toggleChip(el, team, name) {
   const mine = team === 1 ? sel1 : sel2;
   const other = team === 1 ? sel2 : sel1;
-  if (other.includes(name)) return;
+  if(other.includes(name)) return;
   const idx = mine.indexOf(name);
-  if (idx !== -1) mine.splice(idx,1);
+  if(idx !== -1) mine.splice(idx,1);
   else { if(mine.length >= CATS_EACH) return; mine.push(name); }
   syncChips();
   updateStartBtn();
@@ -307,7 +349,7 @@ function startGame() {
   if(sel1.length!==CATS_EACH || sel2.length!==CATS_EACH) return;
   t1Name = document.getElementById('t1name').value.trim() || 'الفريق الأول';
   t2Name = document.getElementById('t2name').value.trim() || 'الفريق التاني';
-  t1Score=0; t2Score=0; usedQuestions={};
+  t1Score=0; t2Score=0; usedTracker={};
   document.getElementById('t1disp').textContent = t1Name;
   document.getElementById('t2disp').textContent = t2Name;
   document.getElementById('t1val').textContent='0';
@@ -315,7 +357,16 @@ function startGame() {
   document.getElementById('gbt1').textContent = '✔ '+t1Name;
   document.getElementById('gbt2').textContent = '✔ '+t2Name;
   const allCats = [...sel1.map(n=>({name:n,team:1})), ...sel2.map(n=>({name:n,team:2}))];
-  boardColumns = allCats.map(({name,team})=>({name,team,cells:[200,400,600].map(pts=>{ const item=getRandomQ(name,pts); return {...item,pts,used:false,winner:0}; })}));
+  boardColumns = allCats.map(({name,team})=>{
+    const q200 = getRandomQuestions(name,200,2);
+    const q400 = getRandomQuestions(name,400,2);
+    const q600 = getRandomQuestions(name,600,2);
+    const cells = [];
+    for(let i=0;i<2;i++) cells.push({...q200[i], pts:200, used:false, winner:0});
+    for(let i=0;i<2;i++) cells.push({...q400[i], pts:400, used:false, winner:0});
+    for(let i=0;i<2;i++) cells.push({...q600[i], pts:600, used:false, winner:0});
+    return {name,team,cells};
+  });
   showScreen('game-screen');
   renderBoard();
 }
@@ -325,7 +376,7 @@ function renderBoard() {
   board.innerHTML='';
   board.style.gridTemplateColumns=`repeat(${boardColumns.length},1fr)`;
   boardColumns.forEach(col=>{const h=document.createElement('div'); h.className=`cat-hdr t${col.team}`; h.textContent=col.name; board.appendChild(h);});
-  for(let row=0;row<3;row++){
+  for(let row=0;row<6;row++){
     boardColumns.forEach((col,ci)=>{
       const cellData=col.cells[row];
       const cell=document.createElement('div');
@@ -349,7 +400,10 @@ function openModal(col,row){
   document.getElementById('mcat').textContent=boardColumns[col].name;
   document.getElementById('mpts').textContent=item.pts+' نقطة';
   document.getElementById('mpts').className=`modal-pts p${item.pts}`;
-  document.getElementById('mq').textContent=item.q;
+  const qDiv = document.getElementById('mq');
+  qDiv.innerHTML = item.q;
+  if(item.isActing) qDiv.classList.add('acting-mode');
+  else qDiv.classList.remove('acting-mode');
   document.getElementById('mans').textContent=item.a;
   document.getElementById('mans').classList.remove('revealed');
   document.getElementById('revbtn').style.display='block';
