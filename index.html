@@ -1,520 +1,298 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سين جيم — نسخة عالمية</title>
+<title>سين جيم — النسخة الكبيرة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080c1a;
-  --team1: #e8b84b;
-  --team2: #4be8c0;
-  --cell-bg: #0d1535;
-  --cell-hover: #162050;
-  --cell-border: #1e2d5e;
-  --used: #090d1c;
-  --used-text: #1e2a45;
-  --text: #eef2ff;
+  --bg: #07090f;
+  --team1: #f0c040;
+  --team2: #40d4a8;
+  --cell-bg: #0d1228;
+  --cell-hover: #14204a;
+  --cell-border: #1a2850;
+  --used: #08091a;
+  --text: #e8eeff;
   --gold: #ffd166;
-  --header-bg: #0a1128;
-  --modal-bg: #0b1230;
+  --header-bg: #090c1e;
+  --modal-bg: #0b0f22;
   --accent: #3a5af0;
+  --muted: #3a4a80;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'Cairo', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
 }
-
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+  content:'';
+  position:fixed; inset:0;
   background:
-    radial-gradient(ellipse 60% 40% at 15% 10%, rgba(58,90,240,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 35% at 85% 90%, rgba(75,232,192,0.07) 0%, transparent 55%);
-  pointer-events: none;
-  z-index: 0;
+    radial-gradient(ellipse 50% 40% at 10% 15%,rgba(58,90,240,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 85%,rgba(64,212,168,.07) 0%,transparent 55%);
+  pointer-events:none; z-index:0;
 }
 
+/* ========= SCREENS ========= */
+.screen { display:none; min-height:100vh; position:relative; z-index:1; }
+.screen.active { display:flex; flex-direction:column; }
+
+/* ========= SETUP ========= */
 #setup-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 30px 20px;
-  position: relative;
-  z-index: 1;
+align-items:center; justify-content:center;
+padding:30px 20px; gap:20px;
 }
+.logo { font-family:‘Tajawal’,sans-serif; font-size:clamp(60px,12vw,100px); font-weight:900; line-height:1; text-align:center; }
+.logo .s { color:var(–team1); } .logo .d { color:#2a3a6a; font-size:.7em; } .logo .g { color:var(–team2); }
+.logo-sub { color:#3a4a7a; font-size:14px; letter-spacing:3px; text-align:center; }
 
-.game-title {
-  font-family: 'Tajawal', sans-serif;
-  font-size: clamp(48px, 10vw, 90px);
-  font-weight: 900;
-  text-align: center;
-  line-height: 1;
-  margin-bottom: 8px;
-  letter-spacing: -2px;
+.card {
+background:rgba(13,18,40,.85);
+border:1px solid var(–cell-border);
+border-radius:20px; padding:28px;
+width:100%; max-width:760px;
+backdrop-filter:blur(12px);
 }
+.card h2 { font-family:‘Tajawal’,sans-serif; font-size:17px; font-weight:700; color:var(–gold); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
 
-.game-title .sin { color: var(--team1); }
-.game-title .div { color: #3a4a7a; font-size: 0.7em; }
-.game-title .gym { color: var(--team2); }
-
-.game-subtitle {
-  text-align: center;
-  color: #4a5a8a;
-  font-size: 15px;
-  margin-bottom: 40px;
-  letter-spacing: 3px;
+.team-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.inp-wrap { display:flex; flex-direction:column; gap:7px; }
+.inp-label { font-size:12px; font-weight:700; letter-spacing:1px; }
+.inp-label.t1 { color:var(–team1); } .inp-label.t2 { color:var(–team2); }
+.inp {
+background:rgba(255,255,255,.04); border:1.5px solid var(–cell-border);
+border-radius:10px; padding:11px 14px; color:var(–text);
+font-family:‘Cairo’,sans-serif; font-size:15px; font-weight:700; outline:none;
+transition:border-color .2s;
 }
+.inp.t1:focus { border-color:var(–team1); }
+.inp.t2:focus { border-color:var(–team2); }
 
-.setup-card {
-  background: rgba(13,21,53,0.8);
-  border: 1px solid var(--cell-border);
-  border-radius: 20px;
-  padding: 30px;
-  width: 100%;
-  max-width: 700px;
-  backdrop-filter: blur(10px);
+/* Category pick grid */
+.cat-pick-info { font-size:13px; color:var(–muted); margin-bottom:14px; line-height:1.6; }
+.cat-section { margin-bottom:20px; }
+.cat-section-title { font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:10px; }
+.cat-section-title.t1 { color:var(–team1); } .cat-section-title.t2 { color:var(–team2); }
+.cat-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chip {
+padding:7px 14px; border-radius:20px; font-family:‘Cairo’,sans-serif;
+font-size:13px; font-weight:600; cursor:pointer;
+border:1.5px solid var(–cell-border);
+background:rgba(255,255,255,.03); color:#8a9aCC;
+transition:all .18s; user-select:none;
 }
+.chip:hover { border-color:var(–muted); color:var(–text); }
+.chip.sel1 { background:rgba(240,192,64,.15); border-color:rgba(240,192,64,.5); color:var(–team1); }
+.chip.sel2 { background:rgba(64,212,168,.12); border-color:rgba(64,212,168,.45); color:var(–team2); }
+.chip.disabled { opacity:.35; cursor:default; pointer-events:none; }
 
-.setup-card h2 {
-  font-family: 'Tajawal', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.pick-status {
+display:flex; gap:16px; margin-top:12px; margin-bottom:4px;
 }
-
-.team-names {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 28px;
+.pick-badge {
+display:flex; align-items:center; gap:6px;
+background:rgba(255,255,255,.04); border:1px solid var(–cell-border);
+border-radius:20px; padding:6px 14px; font-size:13px; font-weight:700;
 }
-
-.team-input-wrap { display: flex; flex-direction: column; gap: 8px; }
-
-.team-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; }
-.team-label.t1 { color: var(--team1); }
-.team-label.t2 { color: var(--team2); }
-
-.team-input {
-  background: rgba(255,255,255,0.04);
-  border: 1.5px solid var(--cell-border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  color: var(--text);
-  font-family: 'Cairo', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.team-input.t1:focus { border-color: var(--team1); }
-.team-input.t2:focus { border-color: var(--team2); }
-
-.cat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-
-.cat-item { display: flex; flex-direction: column; gap: 6px; }
-
-.cat-team-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-
-.cat-select {
-  background: rgba(255,255,255,0.04);
-  border: 1.5px solid var(--cell-border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: var(--text);
-  font-family: 'Cairo', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  outline: none;
-  cursor: pointer;
-  transition: border-color 0.2s;
-  appearance: none;
-}
-
-.cat-select.t1 { border-color: rgba(232,184,75,0.3); }
-.cat-select.t2 { border-color: rgba(75,232,192,0.3); }
-.cat-select.t1:focus { border-color: var(--team1); }
-.cat-select.t2:focus { border-color: var(--team2); }
+.pick-badge.t1 { border-color:rgba(240,192,64,.3); color:var(–team1); }
+.pick-badge.t2 { border-color:rgba(64,212,168,.3); color:var(–team2); }
 
 .start-btn {
-  width: 100%;
-  padding: 18px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, var(--accent), #5a3af0);
-  color: #fff;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 24px rgba(58,90,240,0.4);
-  letter-spacing: 1px;
+width:100%; padding:17px; border-radius:14px; border:none;
+background:linear-gradient(135deg,var(–accent),#5a3af0);
+color:#fff; font-family:‘Tajawal’,sans-serif; font-size:22px; font-weight:900;
+cursor:pointer; transition:all .2s; box-shadow:0 4px 24px rgba(58,90,240,.4);
+margin-top:8px;
 }
+.start-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(58,90,240,.55); }
+.start-btn:disabled { opacity:.4; cursor:default; transform:none; }
 
-.start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(58,90,240,0.5); }
-
-/* GAME */
-#game-screen {
-  display: none;
-  flex-direction: column;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
-}
-
+/* ========= GAME ========= */
 .score-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  background: var(--header-bg);
-  border-bottom: 2px solid var(--cell-border);
-  min-height: 70px;
+display:flex; background:var(–header-bg);
+border-bottom:2px solid var(–cell-border); min-height:68px;
 }
+.team-score { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 16px; gap:1px; }
+.ts-name { font-size:12px; font-weight:700; letter-spacing:1px; opacity:.65; }
+.ts-val { font-family:‘Tajawal’,sans-serif; font-size:30px; font-weight:900; line-height:1; }
+.t1 .ts-val { color:var(–team1); } .t2 .ts-val { color:var(–team2); }
+.score-mid { display:flex; align-items:center; padding:0 18px; border-right:1px solid var(–cell-border); border-left:1px solid var(–cell-border); }
+.vs { font-family:‘Tajawal’,sans-serif; font-size:19px; font-weight:900; color:#1e2e60; }
 
-.team-score {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  gap: 2px;
+.board-wrap { flex:1; padding:10px; overflow:auto; }
+.board { display:grid; gap:7px; min-width:580px; }
+
+.cat-hdr {
+padding:12px 6px; text-align:center; border-radius:9px;
+font-size:clamp(10px,1.4vw,13px); font-weight:700; line-height:1.3;
 }
-
-.team-score-name { font-size: 13px; font-weight: 700; letter-spacing: 1px; opacity: 0.7; }
-.team-score-val { font-family: 'Tajawal', sans-serif; font-size: 32px; font-weight: 900; line-height: 1; }
-.t1 .team-score-val { color: var(--team1); }
-.t2 .team-score-val { color: var(--team2); }
-
-.score-mid {
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  border-right: 1px solid var(--cell-border);
-  border-left: 1px solid var(--cell-border);
-}
-
-.vs-text { font-family: 'Tajawal', sans-serif; font-size: 20px; font-weight: 900; color: #2a3a6a; }
-
-.board-wrap { flex: 1; padding: 12px; overflow: auto; }
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
-  min-width: 600px;
-}
-
-.cat-header {
-  padding: 14px 6px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: clamp(11px, 1.5vw, 14px);
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: 0.5px;
-}
-
-.cat-header.t1 {
-  background: rgba(232,184,75,0.12);
-  border: 1.5px solid rgba(232,184,75,0.3);
-  color: var(--team1);
-}
-
-.cat-header.t2 {
-  background: rgba(75,232,192,0.1);
-  border: 1.5px solid rgba(75,232,192,0.25);
-  color: var(--team2);
-}
+.cat-hdr.t1 { background:rgba(240,192,64,.1); border:1.5px solid rgba(240,192,64,.28); color:var(–team1); }
+.cat-hdr.t2 { background:rgba(64,212,168,.08); border:1.5px solid rgba(64,212,168,.22); color:var(–team2); }
 
 .cell {
-  aspect-ratio: 3/2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  border: 1.5px solid var(--cell-border);
-  background: var(--cell-bg);
-  cursor: pointer;
-  transition: all 0.18s;
-  position: relative;
-  overflow: hidden;
+aspect-ratio:3/2; display:flex; align-items:center; justify-content:center;
+border-radius:9px; border:1.5px solid var(–cell-border);
+background:var(–cell-bg); cursor:pointer; transition:all .17s; position:relative; overflow:hidden;
 }
+.cell:hover:not(.used) { background:var(–cell-hover); transform:scale(1.05); border-color:var(–accent); z-index:2; }
+.cell.used { background:var(–used); border-color:#0f1430; cursor:default; }
+.cell.t1w { background:rgba(240,192,64,.07); border-color:rgba(240,192,64,.18); }
+.cell.t2w { background:rgba(64,212,168,.06); border-color:rgba(64,212,168,.16); }
+.cv { font-family:‘Tajawal’,sans-serif; font-size:clamp(15px,2.4vw,25px); font-weight:900; }
+.cell:not(.used) .cv200 { color:#aab8ff; }
+.cell:not(.used) .cv400 { color:#ffcc44; }
+.cell:not(.used) .cv600 { color:#ff6b6b; }
+.cell.used .cv { color:#1a2248; }
+.cell-dot { position:absolute; bottom:4px; width:5px; height:5px; border-radius:50%; }
+.cell.t1w .cell-dot { background:var(–team1); }
+.cell.t2w .cell-dot { background:var(–team2); }
 
-.cell:hover:not(.used) {
-  background: var(--cell-hover);
-  transform: scale(1.04);
-  border-color: var(--accent);
-  z-index: 2;
+/* ========= MODAL ========= */
+.overlay {
+display:none; position:fixed; inset:0;
+background:rgba(0,0,0,.88); backdrop-filter:blur(7px);
+z-index:200; align-items:center; justify-content:center; padding:16px;
 }
-
-.cell.used { background: var(--used); border-color: #111827; cursor: default; }
-
-.cell-val { font-family: 'Tajawal', sans-serif; font-size: clamp(16px, 2.5vw, 26px); font-weight: 900; transition: color 0.2s; }
-.cell:not(.used) .cell-val-200 { color: #aab8ff; }
-.cell:not(.used) .cell-val-400 { color: #ffcc44; }
-.cell:not(.used) .cell-val-600 { color: #ff6b6b; }
-.cell.used .cell-val { color: var(--used-text); }
-
-.cell.t1-won { background: rgba(232,184,75,0.08); border-color: rgba(232,184,75,0.2); }
-.cell.t2-won { background: rgba(75,232,192,0.07); border-color: rgba(75,232,192,0.2); }
-
-.cell-dot { position: absolute; bottom: 4px; width: 6px; height: 6px; border-radius: 50%; }
-.cell.t1-won .cell-dot { background: var(--team1); }
-.cell.t2-won .cell-dot { background: var(--team2); }
-
-/* MODAL */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(6px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.open { display: flex; }
-
+.overlay.open { display:flex; }
 .modal {
-  background: var(--modal-bg);
-  border: 1.5px solid var(--cell-border);
-  border-radius: 22px;
-  width: 100%;
-  max-width: 640px;
-  padding: 32px 28px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  animation: slideUp 0.3s ease;
-  position: relative;
+background:var(–modal-bg); border:1.5px solid var(–cell-border);
+border-radius:22px; width:100%; max-width:640px;
+padding:30px 26px 24px; display:flex; flex-direction:column; gap:18px;
+animation:up .28s ease; position:relative;
 }
-
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-top { display: flex; justify-content: space-between; align-items: center; }
-.modal-cat { font-size: 13px; font-weight: 700; letter-spacing: 2px; opacity: 0.6; }
-.modal-pts { font-family: 'Tajawal', sans-serif; font-size: 28px; font-weight: 900; }
-.modal-pts.p200 { color: #aab8ff; }
-.modal-pts.p400 { color: #ffcc44; }
-.modal-pts.p600 { color: #ff6b6b; }
-
+@keyframes up { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-top { display:flex; justify-content:space-between; align-items:center; }
+.modal-cat { font-size:12px; font-weight:700; letter-spacing:2px; opacity:.55; }
+.modal-pts { font-family:‘Tajawal’,sans-serif; font-size:26px; font-weight:900; }
+.modal-pts.p200{color:#aab8ff} .modal-pts.p400{color:#ffcc44} .modal-pts.p600{color:#ff6b6b}
 .modal-q {
-  font-size: clamp(18px, 4vw, 24px);
-  font-weight: 700;
-  line-height: 1.7;
-  text-align: center;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
+font-size:clamp(17px,3.5vw,22px); font-weight:700; line-height:1.75;
+text-align:center; min-height:75px; display:flex; align-items:center; justify-content:center;
 }
-
-.modal-answer-wrap {
-  background: rgba(255,255,255,0.03);
-  border: 1.5px solid var(--cell-border);
-  border-radius: 14px;
-  padding: 18px 20px;
-  text-align: center;
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.ans-wrap {
+background:rgba(255,255,255,.03); border:1.5px solid var(–cell-border);
+border-radius:13px; padding:16px 18px; text-align:center;
+min-height:56px; display:flex; align-items:center; justify-content:center;
 }
-
-.modal-answer-blur {
-  font-size: clamp(16px, 3vw, 20px);
-  font-weight: 700;
-  color: var(--gold);
-  filter: blur(8px);
-  transition: filter 0.5s ease;
-  user-select: none;
+.ans-text {
+font-size:clamp(15px,2.8vw,19px); font-weight:700; color:var(–gold);
+filter:blur(8px); transition:filter .45s ease; user-select:none;
 }
-
-.modal-answer-blur.revealed { filter: blur(0); }
-
+.ans-text.revealed { filter:blur(0); }
 .reveal-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1.5px solid rgba(58,90,240,0.5);
-  background: rgba(58,90,240,0.2);
-  color: #aab8ff;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 18px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
+width:100%; padding:13px; border-radius:12px;
+border:1.5px solid rgba(58,90,240,.5); background:rgba(58,90,240,.18);
+color:#aab8ff; font-family:‘Tajawal’,sans-serif; font-size:17px; font-weight:900;
+cursor:pointer; transition:all .2s;
 }
-
-.reveal-btn:hover { background: rgba(58,90,240,0.35); }
-
-.score-btns { display: none; gap: 10px; }
-.score-btns.show { display: flex; }
-
-.score-btn {
-  flex: 1;
-  padding: 13px 6px;
-  border-radius: 12px;
-  border: none;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 15px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
-  line-height: 1.3;
+.reveal-btn:hover { background:rgba(58,90,240,.32); }
+.give-row { display:none; gap:9px; }
+.give-row.show { display:flex; }
+.give-btn {
+flex:1; padding:12px 6px; border-radius:11px; border:none;
+font-family:‘Tajawal’,sans-serif; font-size:14px; font-weight:900;
+cursor:pointer; transition:all .18s; line-height:1.35;
 }
+.give-btn.t1 { background:rgba(240,192,64,.15); border:1.5px solid rgba(240,192,64,.38); color:var(–team1); }
+.give-btn.t2 { background:rgba(64,212,168,.12); border:1.5px solid rgba(64,212,168,.32); color:var(–team2); }
+.give-btn.nobody { background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.1); color:#4a5a90; font-size:12px; }
+.give-btn:hover { transform:translateY(-2px); }
+.give-btn.t1:hover { background:rgba(240,192,64,.28); }
+.give-btn.t2:hover { background:rgba(64,212,168,.22); }
+.close-btn { position:absolute; top:13px; left:15px; background:none; border:none; color:#3a4a7a; font-size:20px; cursor:pointer; font-family:‘Tajawal’,sans-serif; transition:color .2s; }
+.close-btn:hover { color:var(–text); }
 
-.score-btn.t1 { background: rgba(232,184,75,0.15); border: 1.5px solid rgba(232,184,75,0.4); color: var(--team1); }
-.score-btn.t2 { background: rgba(75,232,192,0.12); border: 1.5px solid rgba(75,232,192,0.35); color: var(--team2); }
-.score-btn.nobody { background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); color: #5a6a9a; font-size: 13px; }
-.score-btn:hover { transform: translateY(-2px); }
-.score-btn.t1:hover { background: rgba(232,184,75,0.25); }
-.score-btn.t2:hover { background: rgba(75,232,192,0.2); }
-
-.close-btn {
-  position: absolute;
-  top: 14px;
-  left: 16px;
-  background: none;
-  border: none;
-  color: #4a5a8a;
-  font-size: 22px;
-  cursor: pointer;
-  transition: color 0.2s;
-  font-family: 'Tajawal', sans-serif;
+/* ========= RESULT ========= */
+#result-screen { align-items:center; justify-content:center; padding:40px 20px; gap:18px; text-align:center; }
+.trophy { font-size:88px; animation:bonce .75s ease; }
+@keyframes bonce { 0%,100%{transform:translateY(0)rotate(0)} 45%{transform:translateY(-18px)rotate(-4deg)} 65%{transform:translateY(-10px)rotate(4deg)} }
+.winner-title { font-family:‘Tajawal’,sans-serif; font-size:38px; font-weight:900; }
+.res-scores { display:flex; gap:18px; justify-content:center; }
+.res-card {
+background:var(–cell-bg); border:1.5px solid var(–cell-border);
+border-radius:15px; padding:18px 28px;
+display:flex; flex-direction:column; align-items:center; gap:3px;
 }
-
-.close-btn:hover { color: var(--text); }
-
-/* RESULT */
-#result-screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 40px 20px;
-  text-align: center;
-  gap: 20px;
-  position: relative;
-  z-index: 1;
+.res-card .rn { font-size:12px; font-weight:700; opacity:.55; letter-spacing:1px; }
+.res-card .rv { font-family:‘Tajawal’,sans-serif; font-size:42px; font-weight:900; }
+.res-card.t1 .rv { color:var(–team1); } .res-card.t2 .rv { color:var(–team2); }
+.replay-btn {
+padding:15px 38px; border-radius:13px; border:none;
+background:linear-gradient(135deg,var(–accent),#5a3af0);
+color:#fff; font-family:‘Tajawal’,sans-serif; font-size:19px; font-weight:900;
+cursor:pointer; transition:all .2s; box-shadow:0 4px 22px rgba(58,90,240,.38);
 }
+.replay-btn:hover { transform:translateY(-2px); }
 
-.result-trophy { font-size: 90px; animation: bounce 0.8s ease; }
-@keyframes bounce {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  40% { transform: translateY(-20px) rotate(-5deg); }
-  60% { transform: translateY(-12px) rotate(5deg); }
-}
-
-.result-winner { font-family: 'Tajawal', sans-serif; font-size: 42px; font-weight: 900; }
-
-.result-scores { display: flex; gap: 20px; justify-content: center; }
-
-.res-score-card {
-  background: var(--cell-bg);
-  border: 1.5px solid var(--cell-border);
-  border-radius: 16px;
-  padding: 20px 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.res-score-card .rname { font-size: 13px; font-weight: 700; opacity: 0.6; letter-spacing: 1px; }
-.res-score-card .rval { font-family: 'Tajawal', sans-serif; font-size: 44px; font-weight: 900; }
-.res-score-card.t1 .rval { color: var(--team1); }
-.res-score-card.t2 .rval { color: var(--team2); }
-
-.play-again-btn {
-  padding: 16px 40px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, var(--accent), #5a3af0);
-  color: #fff;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 24px rgba(58,90,240,0.4);
-}
-
-.play-again-btn:hover { transform: translateY(-2px); }
-
-@media (max-width: 650px) {
-  .board { grid-template-columns: repeat(4, 1fr); }
-}
+@media(max-width:640px){ .board{grid-template-columns:repeat(3,1fr) !important;} }
 </style>
+
 </head>
 <body>
 
-<div id="setup-screen">
-  <div class="game-title">
-    <span class="sin">س</span><span class="div"> / </span><span class="gym">ج</span>
-  </div>
-  <div class="game-subtitle">نسخة عالمية</div>
+<!-- SETUP -->
 
-  <div class="setup-card">
+<div id="setup-screen" class="screen active">
+  <div class="logo"><span class="s">س</span><span class="d"> / </span><span class="g">ج</span></div>
+  <div class="logo-sub">النسخة الكبيرة — +٢٠ كاتيجوري</div>
+
+  <div class="card">
     <h2>🏆 أسماء الفرق</h2>
-    <div class="team-names">
-      <div class="team-input-wrap">
-        <div class="team-label t1">الفريق الأول</div>
-        <input class="team-input t1" id="team1-name" type="text" value="الفريق الأول" maxlength="20">
+    <div class="team-row">
+      <div class="inp-wrap">
+        <div class="inp-label t1">الفريق الأول</div>
+        <input class="inp t1" id="t1name" type="text" value="الفريق الأول" maxlength="20">
       </div>
-      <div class="team-input-wrap">
-        <div class="team-label t2">الفريق التاني</div>
-        <input class="team-input t2" id="team2-name" type="text" value="الفريق التاني" maxlength="20">
+      <div class="inp-wrap">
+        <div class="inp-label t2">الفريق التاني</div>
+        <input class="inp t2" id="t2name" type="text" value="الفريق التاني" maxlength="20">
       </div>
     </div>
 
-    <h2>📂 اختار الكاتيجوري (4 لكل فريق)</h2>
-    <div class="cat-grid" id="cat-grid"></div>
+```
+<div class="cat-pick-info">
+  اختار <strong style="color:var(--team1)">٦ كاتيجوري للفريق الأول</strong> و<strong style="color:var(--team2)">٦ كاتيجوري للفريق التاني</strong> من القائمة.
+  الأسئلة بتتغير عشوائياً كل لعبة من بنك كبير!
+</div>
 
-    <button class="start-btn" onclick="startGame()">ابدأ اللعبة 🚀</button>
+<div class="pick-status">
+  <div class="pick-badge t1">🟡 الفريق الأول: <span id="cnt1">0</span>/6</div>
+  <div class="pick-badge t2">🟢 الفريق التاني: <span id="cnt2">0</span>/6</div>
+</div>
+
+<div class="cat-section">
+  <div class="cat-section-title t1">— اختيارات الفريق الأول</div>
+  <div class="cat-chips" id="chips1"></div>
+</div>
+<div class="cat-section">
+  <div class="cat-section-title t2">— اختيارات الفريق التاني</div>
+  <div class="cat-chips" id="chips2"></div>
+</div>
+
+<button class="start-btn" id="start-btn" onclick="startGame()" disabled>اختار ١٢ كاتيجوري للبدء 🚀</button>
+```
+
   </div>
 </div>
 
-<div id="game-screen">
+<!-- GAME -->
+
+<div id="game-screen" class="screen">
   <div class="score-bar">
     <div class="team-score t1">
-      <div class="team-score-name" id="t1-score-name">الفريق الأول</div>
-      <div class="team-score-val" id="t1-score-val">0</div>
+      <div class="ts-name" id="t1disp">الفريق الأول</div>
+      <div class="ts-val" id="t1val">0</div>
     </div>
-    <div class="score-mid"><div class="vs-text">VS</div></div>
+    <div class="score-mid"><div class="vs">VS</div></div>
     <div class="team-score t2">
-      <div class="team-score-name" id="t2-score-name">الفريق التاني</div>
-      <div class="team-score-val" id="t2-score-val">0</div>
+      <div class="ts-name" id="t2disp">الفريق التاني</div>
+      <div class="ts-val" id="t2val">0</div>
     </div>
   </div>
   <div class="board-wrap">
@@ -522,319 +300,858 @@ body::before {
   </div>
 </div>
 
-<div id="result-screen">
-  <div class="result-trophy" id="result-trophy">🏆</div>
-  <div class="result-winner" id="result-winner"></div>
-  <div class="result-scores">
-    <div class="res-score-card t1">
-      <div class="rname" id="res-t1-name">الفريق الأول</div>
-      <div class="rval" id="res-t1-val">0</div>
-    </div>
-    <div class="res-score-card t2">
-      <div class="rname" id="res-t2-name">الفريق التاني</div>
-      <div class="rval" id="res-t2-val">0</div>
-    </div>
+<!-- RESULT -->
+
+<div id="result-screen" class="screen">
+  <div class="trophy" id="rtrophy">🏆</div>
+  <div class="winner-title" id="rwinner"></div>
+  <div class="res-scores">
+    <div class="res-card t1"><div class="rn" id="rn1">—</div><div class="rv" id="rv1">0</div></div>
+    <div class="res-card t2"><div class="rn" id="rn2">—</div><div class="rv" id="rv2">0</div></div>
   </div>
-  <button class="play-again-btn" onclick="location.reload()">العب تاني 🔄</button>
+  <button class="replay-btn" onclick="location.reload()">العب تاني 🔄</button>
 </div>
 
-<div class="modal-overlay" id="modal">
+<!-- MODAL -->
+
+<div class="overlay" id="modal">
   <div class="modal">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <div class="modal-top">
-      <div class="modal-cat" id="modal-cat">—</div>
-      <div class="modal-pts" id="modal-pts">200</div>
+      <div class="modal-cat" id="mcat">—</div>
+      <div class="modal-pts" id="mpts">—</div>
     </div>
-    <div class="modal-q" id="modal-q">...</div>
-    <div class="modal-answer-wrap">
-      <div class="modal-answer-blur" id="modal-ans">...</div>
-    </div>
-    <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer()">👁️ اظهر الإجابة</button>
-    <div class="score-btns" id="score-btns">
-      <button class="score-btn t1" id="give-t1" onclick="givePoint(1)">—</button>
-      <button class="score-btn nobody" onclick="givePoint(0)">محدش عرف</button>
-      <button class="score-btn t2" id="give-t2" onclick="givePoint(2)">—</button>
+    <div class="modal-q" id="mq">...</div>
+    <div class="ans-wrap"><div class="ans-text" id="mans">...</div></div>
+    <button class="reveal-btn" id="revbtn" onclick="revealAns()">👁️ اظهر الإجابة</button>
+    <div class="give-row" id="giverow">
+      <button class="give-btn t1" id="gbt1" onclick="givePoint(1)">—</button>
+      <button class="give-btn nobody" onclick="givePoint(0)">محدش عرف</button>
+      <button class="give-btn t2" id="gbt2" onclick="givePoint(2)">—</button>
     </div>
   </div>
 </div>
 
 <script>
-const CATEGORIES = {
+const QUESTION_BANK = {
 
-  "💻 تكنولوجيا وإنترنت": [
-    { pts: 200, q: "ما اسم نظام التشغيل مفتوح المصدر الذي طوّره لينوس تورفالدز عام ١٩٩١؟", a: "Linux" },
-    { pts: 200, q: "ماذا يعني اختصار HTTP؟", a: "HyperText Transfer Protocol" },
-    { pts: 400, q: "ما اسم البروتوكول الذي يُشفّر الاتصال بين المتصفح والسيرفر ويظهر كـ HTTPS؟", a: "TLS — Transport Layer Security (أو SSL في إصداراته القديمة)" },
-    { pts: 400, q: "في عالم الذكاء الاصطناعي، ما المقصود بـ 'Hallucination' عند نماذج اللغة؟", a: "توليد النموذج لمعلومات خاطئة أو مختلقة بثقة عالية" },
-    { pts: 600, q: "ما الفرق الجوهري بين معمارية Transformer و RNN في نماذج الذكاء الاصطناعي؟", a: "Transformer يعالج البيانات بالتوازي عبر Attention — RNN يعالجها بشكل تسلسلي مما يُبطئه ويجعله أضعف في السياقات الطويلة" },
-    { pts: 600, q: "ما اسم الورقة البحثية التي قدّمت معمارية Transformer عام ٢٠١٧ وما عنوانها الشهير؟", a: "Attention Is All You Need — قدّمها باحثو Google Brain" },
-  ],
+  "📜 تاريخ مصر": {
+    200: [
+      { q: "في أي عام فتح عمرو بن العاص مصر؟", a: "٦٤١م" },
+      { q: "ما اسم أول عاصمة إسلامية في مصر؟", a: "الفسطاط" },
+      { q: "من بنى القاهرة؟", a: "جوهر الصقلي القائد الفاطمي — ٩٦٩م" },
+      { q: "في أي عام أُنشئت قناة السويس؟", a: "١٨٦٩م" },
+      { q: "من كان أول رئيس لمصر بعد ثورة ١٩٥٢؟", a: "محمد نجيب" },
+      { q: "في أي عام قامت ثورة يوليو ١٩٥٢؟", a: "٢٣ يوليو ١٩٥٢" },
+      { q: "من أمر ببناء السد العالي؟", a: "جمال عبد الناصر" },
+      { q: "في أي عام افتُتح متحف المصري الكبير؟", a: "٢٠٢٣" },
+      { q: "ما اسم المعركة التي هزم فيها نابليون المماليك بالقرب من الأهرامات؟", a: "معركة الأهرام — ١٧٩٨م" },
+      { q: "في أي عام جلا الإنجليز عن مصر رسمياً؟", a: "١٩٥٦م بعد العدوان الثلاثي" },
+      { q: "من أسّس الأسرة العلوية في مصر؟", a: "محمد علي باشا" },
+      { q: "في أي عام تأميم قناة السويس؟", a: "١٩٥٦م" },
+      { q: "ما اسم الحملة الفرنسية التي جاءت مع نابليون إلى مصر؟", a: "الحملة الفرنسية ١٧٩٨–١٨٠١" },
+      { q: "من هو آخر حاكم عثماني لمصر قبل محمد علي؟", a: "خورشيد باشا" },
+      { q: "في أي عام وقّعت مصر وإسرائيل معاهدة السلام؟", a: "١٩٧٩م" },
+      { q: "ما اسم الرئيس المصري الذي اغتيل عام ١٩٨١؟", a: "أنور السادات" },
+      { q: "في أي عام ثورة ٢٥ يناير؟", a: "٢٠١١م" },
+      { q: "من قاد المقاومة الشعبية ضد الحملة الفرنسية في الصعيد؟", a: "المماليك والأهالي — من أبرزهم مراد بك" },
+      { q: "ما اسم أقدم كنيسة في مصر؟", a: "كنيسة أبو سرغة في القاهرة القديمة" },
+      { q: "من أسّس الجامع الأزهر؟", a: "جوهر الصقلي بأمر من المعز لدين الله الفاطمي" },
+    ],
+    400: [
+      { q: "ما اسم المعاهدة التي حدّدت نفوذ محمد علي بعد حروبه في الشام؟", a: "معاهدة لندن ١٨٤٠م" },
+      { q: "من كان المهندس الفرنسي الذي صمّم قناة السويس؟", a: "فرديناند دي ليسبس" },
+      { q: "ما اسم الحادثة التي قتل فيها محمد علي المماليك عام ١٨١١؟", a: "مذبحة القلعة" },
+      { q: "في عهد من من الخلفاء الفاطميين بنيت القاهرة رسمياً؟", a: "المعز لدين الله الفاطمي" },
+      { q: "ما الاسم الكامل لـ'الثورة العرابية' وما سببها الرئيسي؟", a: "الثورة العرابية ١٨٨١–١٨٨٢ — بقيادة أحمد عرابي ضد النفوذ الأجنبي والتمييز في الجيش" },
+      { q: "من قاد الجيش المصري في حرب أكتوبر ١٩٧٣؟", a: "المشير أحمد إسماعيل — وزير الحربية، والفريق سعد الدين الشاذلي رئيساً للأركان" },
+      { q: "ما اسم الخط الدفاعي الإسرائيلي الذي اخترقه الجيش المصري في أكتوبر ١٩٧٣؟", a: "خط بارليف" },
+      { q: "في أي وزارة عمل سعد زغلول قبل أن يقود ثورة ١٩١٩؟", a: "وزارة المعارف ثم وزارة الحقانية (العدل)" },
+      { q: "ما سبب نفي سعد زغلول إلى مالطا؟", a: "طلبه السماح لوفد مصري بحضور مؤتمر الصلح في باريس بعد الحرب العالمية الأولى" },
+      { q: "من هو الخديو الذي افتتح قناة السويس عام ١٨٦٩؟", a: "الخديو إسماعيل" },
+      { q: "ما اسم المعركة التي كسب فيها المصريون والعرب على الصليبيين عام ١١٨٧؟", a: "معركة حطين — صلاح الدين الأيوبي" },
+      { q: "ما وثيقة 'لافاييت' المتعلقة باستقلال مصر؟", a: "وثيقة ١٩٢٢ التي أعلن فيها الإنجليز الاستقلال الشكلي لمصر" },
+      { q: "من هو الزعيم النوبي الذي قاوم الضم العثماني في جنوب مصر؟", a: "لا يوجد مقاومة موثّقة كبرى — الجنوب دخل تحت الحكم العثماني-المحلي بشكل تدريجي" },
+      { q: "ما اسم أشهر كتاب كتبه عبد الرحمن الجبرتي عن الحملة الفرنسية؟", a: "عجائب الآثار في التراجم والأخبار" },
+      { q: "ما مدة حكم محمد علي باشا في مصر؟", a: "من ١٨٠٥ إلى ١٨٤٨ — نحو ٤٣ عاماً" },
+    ],
+    600: [
+      { q: "ما الفرق السياسي بين مصطلحَي 'الخديو' و'الوالي' في السياق المصري العثماني؟", a: "الوالي: حاكم معيَّن من الباب العالي — الخديو: لقب أعلى منحه السلطان لإسماعيل ١٨٦٧ يعني استقلالاً شبه تام في الإدارة مع الاعتراف بالسيادة العثمانية رمزياً" },
+      { q: "ما الأسباب الاقتصادية العميقة التي أدت إلى الاحتلال البريطاني لمصر عام ١٨٨٢؟", a: "تضخم ديون الخديو إسماعيل (بسبب قناة السويس والمشاريع) — السيطرة الأوروبية على المالية المصرية (الصندوق — الرقابة الثنائية) — خشية بريطانيا على مصالحها في القناة" },
+      { q: "كيف أثّرت حرب أكتوبر ١٩٧٣ على السياسة الأمريكية في الشرق الأوسط بشكل مباشر؟", a: "أجبرت كيسنجر على السعي لحل دبلوماسي — أدت لمؤتمر جنيف ١٩٧٣ — مهّدت لاتفاقيات كامب ديفيد ١٩٧٨ وأعادت رسم التحالفات الإقليمية" },
+      { q: "ما أهمية 'فرمان الاستقلال' عام ١٨٤٠ في تاريخ مصر وتأثيره على مشروع محمد علي؟", a: "حدّد وراثة الحكم في ذرية محمد علي لكنه قيّد حجم الجيش لـ١٨٠٠٠ جندي وأنهى التوسع المصري في الشام وأحبط مشروع دولة إقليمية كبرى" },
+      { q: "ما الأسباب الحقيقية لفشل مصر في حرب ١٩٦٧ وفق المصادر المصرية؟", a: "الانقسام في القيادة العسكرية — التدخل السياسي في القرار العسكري — الاستخبارات المضلِّلة — انتشار قوات في اليمن — والضربة الجوية المباغتة التي دمرت سلاح الطيران على الأرض" },
+      { q: "ما دور المصريين في الحضارة الإسلامية خلال العصر الفاطمي بما يتجاوز السياسة؟", a: "إنشاء الأزهر كمركز علمي عالمي — ازدهار الفلسفة والطب والفلك — إنتاج الفاطميين للزجاج والسيراميك والفنون المزخرفة — وتطوير القاهرة كمركز تجاري بين البحر الأحمر والمتوسط" },
+      { q: "ما التحول الذي أحدثته سياسة الانفتاح الاقتصادي لمصر في عهد السادات على البنية الاجتماعية؟", a: "صعود طبقة رجال أعمال جديدة — هجرة العمالة للخليج وتحويلات المغتربين — تراجع القطاع العام والطبقة الوسطى الناصرية — وظهور تفاوت طبقي حاد لم يكن موجوداً في عهد ناصر" },
+    ],
+  },
 
-  "🕌 دين وحضارة إسلامية": [
-    { pts: 200, q: "ما عدد سور القرآن الكريم؟", a: "١١٤ سورة" },
-    { pts: 200, q: "في أي مدينة وُلد النبي محمد ﷺ؟", a: "مكة المكرمة" },
-    { pts: 400, q: "ما اسم أول دولة إسلامية مستقلة أُسّست في الأندلس وعاصمتها؟", a: "إمارة قرطبة — عاصمتها قرطبة، أسّسها عبد الرحمن الداخل عام ٧٥٦م" },
-    { pts: 400, q: "ما الفرق العقدي الرئيسي بين المذهب الأشعري والمذهب المعتزلي؟", a: "المعتزلة يُقدّمون العقل على النص في بعض المسائل — الأشاعرة يجمعون بينهما مع تقديم النص" },
-    { pts: 600, q: "من هو العالم الإسلامي الذي وضع أسس علم المقاصد الشرعية وما كتابه الأشهر؟", a: "الإمام الشاطبي — كتابه 'الموافقات'" },
-    { pts: 600, q: "ما الفرق بين الإجماع والقياس كمصدرين من مصادر التشريع الإسلامي؟", a: "الإجماع: اتفاق علماء الأمة على حكم — القياس: إلحاق مسألة جديدة بأصل معلوم الحكم لعلة مشتركة" },
-  ],
+  "🏺 حضارة فرعونية": {
+    200: [
+      { q: "كم عدد الأهرامات الرئيسية في الجيزة؟", a: "ثلاثة" },
+      { q: "من بنى هرم الجيزة الأكبر؟", a: "الفرعون خوفو" },
+      { q: "ما اسم إله الشمس الرئيسي عند المصريين القدماء؟", a: "رع (أو آمون رع)" },
+      { q: "في أي مدينة يقع معبد أبو سمبل؟", a: "أسوان — جنوب مصر" },
+      { q: "ما اسم النهر المقدس في الديانة المصرية القديمة؟", a: "النيل" },
+      { q: "من اكتشف مقبرة توت عنخ آمون؟", a: "هاوارد كارتر — ١٩٢٢م" },
+      { q: "ما اسم الكتابة التصويرية للمصريين القدماء؟", a: "الهيروغليفية" },
+      { q: "ما اسم إله الموتى في مصر القديمة المُصوَّر برأس ابن آوى؟", a: "أنوبيس" },
+      { q: "في أي محافظة مصرية تقع مدينة الأقصر الأثرية؟", a: "محافظة الأقصر" },
+      { q: "ما اسم الحجر الذي ساعد في فكّ رموز الهيروغليفية؟", a: "حجر رشيد" },
+      { q: "ما اسم زوجة الإله أوزيريس في الميثولوجيا المصرية؟", a: "إيزيس" },
+      { q: "من هو الفرعون الذي نقل عاصمته إلى تل العمارنة وعبد إلهاً واحداً؟", a: "أخناتون (أمنحتب الرابع)" },
+      { q: "ما اسم المدينة الفرعونية القديمة التي كانت عاصمة مصر القديمة وتُعرف الآن بالأقصر؟", a: "طيبة" },
+      { q: "كم يبلغ عمر هرم خوفو تقريباً؟", a: "حوالي ٤٥٠٠ سنة" },
+      { q: "ما اسم بردية المصريين القدماء الشهيرة المتعلقة بالموتى؟", a: "كتاب الموتى" },
+      { q: "من هو الإله المصري مُصوَّر برأس صقر؟", a: "حورس" },
+      { q: "ما اسم آخر ملكة مصر الفرعونية؟", a: "كليوباترا السابعة" },
+      { q: "ما المواد التي استُخدمت في عملية التحنيط؟", a: "النطرون والراتنج والكتان وبعض العطور" },
+    ],
+    400: [
+      { q: "ما الفرق بين الدولة القديمة والوسطى والحديثة في التاريخ الفرعوني؟", a: "القديمة: عصر الأهرامات (٢٦٨٦–٢١٨١ق.م) — الوسطى: عصر إعادة التوحيد (٢٠٥٥–١٦٥٠ق.م) — الحديثة: عصر التوسع والإمبراطورية (١٥٥٠–١٠٧٠ق.م)" },
+      { q: "ما وظيفة الكاهن 'الوزير' (Vizier) في الدولة الفرعونية؟", a: "كان المنفذ الأول لأوامر الفرعون — يُشرف على الإدارة والقضاء والضرائب والمشاريع العامة" },
+      { q: "لماذا بنى رمسيس الثاني معبد أبو سمبل بالضبط في موقعه؟", a: "مرتين في السنة (٢٢ فبراير و٢٢ أكتوبر) تنير الشمس تماثيل الداخل — وكان لإرسال رسالة للنوبيين بقوة مصر" },
+      { q: "ما أهمية 'لوح نارمر' في التاريخ الفرعوني؟", a: "يُعدّ أقدم وثيقة تصويرية تُجسّد توحيد مصر العليا والسفلى على يد الفرعون نارمر (مينا)" },
+      { q: "كيف كانت تُحدَّد هوية الفرعون في الحياة الدينية؟", a: "الفرعون يُعدّ تجسيداً للإله حورس حياً وأوزيريس بعد موته — كان وسيطاً بين البشر والآلهة" },
+      { q: "ما المقصود بـ'كانوبيك' في طقوس التحنيط المصرية؟", a: "أوعية جنائزية أربعة تحفظ أحشاء المتوفى (معدة — كبد — رئتان — أمعاء) كل واحدة تحمي إلهاً من أبناء حورس" },
+      { q: "ما الفرق بين الهيروغليفية والهيراطيقية والديموطيقية؟", a: "الهيروغليفية: رسمية دينية ونقوش — الهيراطيقية: مبسّطة للكتّاب — الديموطيقية: عامية شعبية متأخرة" },
+      { q: "ما دور النهر في النظام الزراعي والإداري لمصر القديمة؟", a: "الفيضان السنوي يُخصّب الأرض بالطمي — قسّم مصر إلى أراضٍ مُسجَّلة للضرائب — حدّد دورة الزراعة والاحتفالات الدينية" },
+    ],
+    600: [
+      { q: "ما التفسيرات الحديثة لبناء الأهرامات وكيف تختلف عن نظريات العمل الإجباري؟", a: "الأدلة الأثرية تُثبت أن بناة الأهرامات كانوا عمالاً أحراراً مأجورين — تُوجد سجلات طبية ومقابر للعمال بجوار الأهرامات تُظهر رعاية صحية — وليسوا عبيداً كما روى هيرودوت" },
+      { q: "لماذا اعتُبرت ثورة أخناتون الدينية فاشلة وما مصيرها بعد موته؟", a: "أقصى الكهنوت القديم فأعدائه كثيرون — قلّص الدولة الدينية — بعد موته محا توت عنخ آمون وحورمحب آثاره وأعادوا التعددية — محوه من السجلات جعله 'الفرعون المهرطق'" },
+      { q: "ما الدلالة الفلسفية لمفهوم 'ماعت' في الحضارة المصرية القديمة؟", a: "ماعت: مبدأ الحق والعدل والنظام الكوني — الفرعون مُلزَم بتحقيقها — في محاكمة الموتى تُوزن الروح ضدها — هي أساس الأخلاق والسياسة والكون في الفكر المصري القديم" },
+      { q: "كيف أثّرت مصر القديمة على الأديان الإبراهيمية من خلال مفهوم الحساب بعد الموت؟", a: "فكرة محاكمة الروح ووزن القلب وجنة الحقول (آرو) وجهنم النار هي أسبق في الزمن — يرى بعض الباحثين تأثيراً غير مباشر عبر الاحتكاك في مصر — وإن ظلّ محل جدل أكاديمي" },
+      { q: "ما أوجه التشابه والاختلاف بين الحضارة المصرية والرافدينية في البنية الإدارية؟", a: "التشابه: دولة مركزية — ضرائب — كتابة — معابد كمراكز اقتصادية. الاختلاف: مصر أكثر استقراراً بسبب النيل وعزلة جغرافية — بابل أكثر تعرضاً للغزو — الفرعون أكثر تأليهاً من ملوك بابل" },
+    ],
+  },
 
-  "🎬 سينما عالمية": [
-    { pts: 200, q: "من أخرج فيلم The Godfather عام ١٩٧٢؟", a: "فرانسيس فورد كوبولا" },
-    { pts: 200, q: "أي فيلم حصل على أكبر عدد من جوائز الأوسكار في تاريخ الحفل؟", a: "Ben Hur و Titanic و The Return of the King — كل منها فاز بـ١١ جائزة" },
-    { pts: 400, q: "ما اسم تقنية التصوير التي طوّرها كريستوفر نولان لفيلم Dunkirk وتعتمد على كاميرات IMAX بشكل كامل؟", a: "تصوير IMAX Film بكاميرات ١٥/٧٠ ملم ميكانيكية بالكامل" },
-    { pts: 400, q: "من هو المخرج الياباني صاحب فيلم Seven Samurai ١٩٥٤ الذي أثّر في معظم أفلام الحركة الغربية؟", a: "أكيرا كوروساوا" },
-    { pts: 600, q: "ما اسم الحركة السينمائية الفرنسية في الخمسينيات والستينيات التي ضمّت تروفو وغودار وما مبدأها النقدي الأساسي؟", a: "Nouvelle Vague — مبدأها: المخرج هو 'مؤلف' الفيلم (Auteur Theory)" },
-    { pts: 600, q: "في فيلم 2001: A Space Odyssey، ما الرمز الفلسفي الذي يُجسّده المونوليث الأسود وفق تفسير كوبريك؟", a: "أداة التطور — يُمثّل التدخل الخارجي (أو الإلهي) الذي يدفع الوعي للمرحلة التالية" },
-  ],
+  "🎬 سينما مصرية": {
+    200: [
+      { q: "ما اسم أول فيلم مصري ناطق؟", a: "أنشودة الفؤاد — ١٩٣٢م" },
+      { q: "من يُلقَّب بـ'الزعيم' في الفن المصري؟", a: "عادل إمام" },
+      { q: "من أخرج فيلم 'إسكندرية ليه'؟", a: "يوسف شاهين" },
+      { q: "من لعب دور الزعيم في فيلم 'ناصر ٥٦'؟", a: "أحمد زكي" },
+      { q: "ما اسم الفيلم المصري الذي فاز بالسعفة الذهبية في كان؟", a: "لم يفز فيلم مصري بالسعفة الذهبية — لكن يوسف شاهين حصل على جائزة خاصة عام ١٩٩٧" },
+      { q: "في أي فيلم قال فريد شوقي 'أنا الواد المشاغب'؟", a: "الواد المشاغب — ١٩٥٧م" },
+      { q: "من هو الممثل المصري الملقب بـ'الوحش'؟", a: "فريد شوقي" },
+      { q: "ما اسم فيلم نجيب الريحاني الشهير مع ليلى مراد؟", a: "غزل البنات — ١٩٤٩م" },
+      { q: "من هي بطلة فيلم 'أريد حلاً'؟", a: "فاتن حمامة" },
+      { q: "من أدّى دور نصر الله في مسلسل 'الحاج متولي'؟", a: "نور الشريف" },
+      { q: "ما اسم المخرج المصري صاحب فيلم 'الإرهابي'؟", a: "نادر جلال" },
+      { q: "من مثّل دور المعلم في فيلم 'عمارة يعقوبيان'؟", a: "نور الشريف" },
+      { q: "ما الفيلم المصري الذي اعتُبر أول تجربة للسينما الواقعية في مصر؟", a: "باب الحديد ليوسف شاهين — ١٩٥٨م" },
+      { q: "من قام بدور البطولة في فيلم 'المصير' ليوسف شاهين؟", a: "نور الشريف" },
+      { q: "من هي الممثلة المصرية الملقبة بـ'سيدة الشاشة العربية'؟", a: "فاتن حمامة" },
+    ],
+    400: [
+      { q: "ما الموضوع الرئيسي الذي تناوله يوسف شاهين في ثلاثيته الإسكندرية؟", a: "السيرة الذاتية والهوية المصرية والصراع بين الشرق والغرب" },
+      { q: "كيف عكست أفلام السبعينيات في مصر التحولات الاجتماعية بعد الانفتاح؟", a: "صعود شخصية 'رجل الأعمال الانتهازي' — تراجع قيم الثورة — ظهور التناقضات الاجتماعية والفساد" },
+      { q: "ما الفيلم المصري الذي أثار جدلاً حول حرية التعبير ومُنع من العرض في بعض الدول العربية؟", a: "الكيت كات ١٩٩١ — وأفلام أخرى كالمواطن مصري" },
+      { q: "ما مدرسة التمثيل التي تخرّج منها معظم جيل الذهبي من الممثلين المصريين كنور الشريف وأحمد زكي؟", a: "معهد الفنون المسرحية (أكاديمية الفنون)" },
+      { q: "ما الفرق الأسلوبي بين سينما يوسف شاهين وسينما صلاح أبو سيف؟", a: "شاهين: شخصي وتعبيري ومتأثر بالموجة الأوروبية — أبو سيف: واقعي اجتماعي يصوّر الطبقة الكادحة والحارة الشعبية" },
+      { q: "كيف قدّمت السينما المصرية صورة المرأة من الأربعينيات حتى الثمانينيات؟", a: "الأربعينيات: المرأة المتعلمة المتحررة (ليلى مراد، فاتن حمامة) — الستينيات: المرأة في المجتمع الناصري — الثمانينيات: تراجع تدريجي وظهور الحجاب كقضية" },
+      { q: "ما أهمية فيلم 'زينب' ١٩٣٠ في تاريخ السينما المصرية؟", a: "أول فيلم روائي مصري طويل — أخرجه محمد كريم عن رواية هيكل" },
+    ],
+    600: [
+      { q: "كيف أثّر النظام الناصري على الإنتاج السينمائي المصري تأميماً وموضوعاً؟", a: "تأميم شركات الإنتاج الكبرى — توجيه الأفلام لتمجيد الثورة والوحدة القومية — الرقابة المشددة — لكن أيضاً دعم لأفلام جادة كأفلام أبو سيف وشاهين" },
+      { q: "ما الدور الذي لعبته مجلة 'الكواكب' في بناء ثقافة السينما المصرية؟", a: "كانت المرجع الأساسي لنقد الأفلام وتاريخ الفن والنجوم — أسهمت في تشكيل الذوق العام وصناعة النجومية في مصر" },
+      { q: "ما التحولات التي أحدثتها موجة السينما المستقلة المصرية في العقد الأول من ٢٠٠٠؟", a: "كسرت نموذج الإنتاج التلفزيوني الضخم — قدّمت موضوعات اجتماعية جريئة (عشم — هليوبوليس) — اعتمدت ميزانيات صغيرة وتوزيع مهرجانات" },
+      { q: "كيف تختلف نظرية 'المؤلف السينمائي' تطبيقاً بين شاهين ومخرجي التيار التجاري المصري؟", a: "شاهين: بصمة شخصية واضحة في الموضوع والأسلوب والسيرة الذاتية — التيار التجاري: المخرج منفّذ لا مؤلف — الأولوية للنجم والسيناريست لا للمخرج" },
+    ],
+  },
 
-  "⚽ رياضة عالمية": [
-    { pts: 200, q: "كم مرة فاز رونالدو بجائزة البالون دور؟", a: "٥ مرات" },
-    { pts: 200, q: "أي منتخب يحمل لقب أكثر الفائزين بكأس العالم؟", a: "البرازيل — ٥ بطولات" },
-    { pts: 400, q: "في أي سنة تأسّس نادي برشلونة ومن أسّسه؟", a: "١٨٩٩ — أسّسه يوهان غامبر مع مجموعة من اللاعبين الأجانب والمحليين" },
-    { pts: 400, q: "ما هي أطول سلسلة انتصارات متتالية في تاريخ دوري أبطال أوروبا لفريق واحد؟", a: "ريال مدريد فاز بـ٣ نسخ متتالية (٢٠١٦-٢٠١٨)" },
-    { pts: 600, q: "في كأس العالم ١٩٩٤، كيف حُسم النهائي بين البرازيل وإيطاليا وما النتيجة؟", a: "تعادل ٠-٠ بعد الوقتين الأصلي والإضافي — فازت البرازيل بركلات الترجيح ٣-٢ بعد تفويت باجيو للركلة الأخيرة" },
-    { pts: 600, q: "ما اسم الظاهرة الإحصائية المسماة Moneyball وفي أي رياضة طُبّقت أول مرة؟", a: "استخدام التحليل الإحصائي (Sabermetrics) لبناء الفرق بميزانية محدودة — طُبّقت في البيسبول مع فريق Oakland Athletics" },
-  ],
+  "🎵 موسيقى عربية": {
+    200: [
+      { q: "ما لقب أم كلثوم؟", a: "كوكب الشرق" },
+      { q: "من ألّف أغنية 'الأطلال' لأم كلثوم؟", a: "كلمات إبراهيم ناجي — موسيقى رياض السنباطي" },
+      { q: "من يُلقَّب بـ'عبقري الطرب'؟", a: "عبد الحليم حافظ" },
+      { q: "في أي مدينة وُلد فيروز؟", a: "بيروت" },
+      { q: "من هو ملحّن معظم أغاني فيروز في بداياتها؟", a: "الأخوان رحباني (عاصي ومنصور)" },
+      { q: "ما اسم الأغنية الوطنية الأشهر لعبد الحليم حافظ؟", a: "على حسب وداد — أو صافيني مرة — أو قارئة الفنجان" },
+      { q: "من هو المطرب الملقب بـ'شادي الوادي'؟", a: "عبد الحليم حافظ" },
+      { q: "من هو مؤلف موسيقى فيلم 'رسالة إلى الله'؟", a: "عمر خيرت" },
+      { q: "ما اسم الموسيقار المصري الذي يُعدّ رائد الموسيقى التصويرية المصرية؟", a: "عمر خيرت" },
+      { q: "من غنّى 'بكرة السفر'؟", a: "وردة الجزائرية" },
+      { q: "ما المقام الموسيقي الأكثر استخداماً في الموسيقى العربية؟", a: "مقام الراست أو مقام البياتي" },
+      { q: "من هو الموسيقار اللبناني الأشهر في موسيقى الجاز العربي؟", a: "ربيع أبو خليل أو مارسيل خليفة" },
+      { q: "ما اسم أشهر قصيدة لنزار قباني غنّاها كاظم الساهر؟", a: "أيظن أو رسالة إلى أم كلثوم" },
+    ],
+    400: [
+      { q: "ما الفرق الموسيقي بين مقام الراست ومقام البياتي؟", a: "الراست: يبدأ من درجة الراست بتنصيف الدرجة الثالثة — البياتي: درجاته الثانية والثالثة منخفضتان ربع تون مما يعطيه طابعاً حزيناً" },
+      { q: "كيف طوّر محمد عبد الوهاب الأغنية المصرية بما أضافه من موسيقى غربية؟", a: "دمج التوزيع الأوركسترالي الغربي بالمقامات العربية — استخدم الآلات الغربية (وتريات وإيقاعات) مع الجملة اللحنية الشرقية" },
+      { q: "ما مميزات أغنية 'الأطلال' التي جعلتها من أعظم الأغاني العربية؟", a: "مدتها ساعة ونصف — تنوع المقامات — تصاعد درامي تدريجي — لغة شعرية رفيعة — وأداء أم كلثوم الارتجالي المختلف في كل حفلة" },
+      { q: "ما دور 'فرقة الإذاعة المصرية' في نشر الموسيقى العربية في القرن العشرين؟", a: "كانت المنصة الرئيسية للأغنية العربية — قدّمت أم كلثوم وعبد الوهاب وعبد الحليم — وصلت لملايين الأسر في العالم العربي قبل التلفزيون" },
+      { q: "ما أهمية 'السماع الصوفي' في تطور الموسيقى العربية؟", a: "أسهم في تطوير التواشيح والموشحات والأذكار — قدّم الأداء الجماعي المنظوم — أثّر في أسلوب الإنشاد والتطريب الذي تطور إلى الأغنية الدنيوية" },
+    ],
+    600: [
+      { q: "كيف يرصد علم الموسيقولوجيا تأثير الحضارة العربية على الموسيقى الأوروبية في العصور الوسطى؟", a: "انتقال آلات (العود → اللوت — الرباب → الكمان) عبر الأندلس وصقلية — تأثير النظام المقامي العربي على الجريغوريان — كتب الفارابي الموسيقية تُرجمت للاتينية" },
+      { q: "ما التحولات التي أحدثتها موسيقى 'الجيل الثاني' من الموزعين الموسيقيين في مصر (بليغ حمدي وآخرون)؟", a: "بليغ حمدي أدخل الإيقاعات الشعبية والريتم السريع — كسر احتكار الشعر الفصيح بالعامية — خلق أغنية طرب شبابية مختلفة عن جيل أم كلثوم" },
+      { q: "ما الجدل الأكاديمي حول أصل الربع تون في الموسيقى العربية وهل هو ربع تون حقيقي؟", a: "الجدل: هل هو ربع تون رياضي دقيق أم مرونة أدائية؟ الموسيقولوجيون المحدثون يرون أنه انزياح تعبيري متغير لا ثابت رياضي — يختلف بين المقامات والمؤدين" },
+    ],
+  },
 
-  "🧬 علوم وطبيعة": [
-    { pts: 200, q: "ما العنصر الأكثر وفرة في الكون؟", a: "الهيدروجين" },
-    { pts: 200, q: "كم يبلغ سرعة الضوء في الفراغ تقريباً؟", a: "٣٠٠٬٠٠٠ كيلومتر في الثانية (٢٩٩٬٧٩٢٬٤٥٨ م/ث)" },
-    { pts: 400, q: "ما الفرق بين الانشطار النووي والاندماج النووي وأيهما يُستخدم في المفاعلات حالياً؟", a: "الانشطار: تكسير نواة ثقيلة — الاندماج: دمج نوى خفيفة وأكثر طاقة. المفاعلات الحالية تعتمد الانشطار" },
-    { pts: 400, q: "ما النظرية التي تُفسّر انتشار قارات الأرض ابتداءً من قارة واحدة؟", a: "نظرية انجراف القارات (Continental Drift) — طرحها ألفريد فيغنر ١٩١٢" },
-    { pts: 600, q: "ما مبدأ عدم اليقين لهايزنبرغ وما أثره على مفهوم الحتمية الفيزيائية الكلاسيكية؟", a: "يقول إن موضع الجسيم وكمية حركته لا يمكن معرفتهما بدقة معاً — يهدم الحتمية الكلاسيكية (نيوتن) ويُثبت أن العشوائية أصيلة في الطبيعة" },
-    { pts: 600, q: "ما التفسيرات الثلاثة الكبرى لميكانيكا الكم وأبرز خلافاتها؟", a: "كوبنهاغن (الموجة تنهار عند القياس) — عوالم متعددة (كل احتمال يتحقق في كون موازٍ) — المتغيرات الخفية (ديفيد بوم: الواقع محدد لكننا نجهله)" },
-  ],
+  "⚽ كرة قدم عالمية": {
+    200: [
+      { q: "من فاز بكأس العالم ٢٠٢٢ في قطر؟", a: "الأرجنتين" },
+      { q: "كم هدفاً سجّل رونالدو في مسيرته الدولية حتى ٢٠٢٤؟", a: "أكثر من ١٣٠ هدفاً" },
+      { q: "في أي نادٍ يلعب كيليان مبابي حالياً؟", a: "ريال مدريد" },
+      { q: "من هو أكثر لاعب فوزاً بكأس العالم في التاريخ؟", a: "البرازيليون الذين فازوا عام ١٩٥٨ و٦٢ و٧٠ (بيليه وآخرون)" },
+      { q: "ما أكبر فوز في تاريخ كأس العالم؟", a: "المجر ١٠–١ السلفادور — ١٩٨٢م" },
+      { q: "من هو مدرّب منتخب فرنسا بطل العالم ١٩٩٨؟", a: "إيمي جاكيه" },
+      { q: "أين سيُقام كأس العالم ٢٠٢٦؟", a: "أمريكا وكندا والمكسيك" },
+      { q: "من هو اللاعب الذي سجّل هدفاً بيده في كأس العالم ٨٦؟", a: "دييغو مارادونا — يد الله" },
+      { q: "ما اسم الملعب الأكبر في العالم؟", a: "ملعب ناريندرا مودي في الهند (١٣٢٠٠٠ متفرج) — أو روبنغراد في كوريا" },
+      { q: "من فاز بأول نسخة من دوري أبطال أوروبا (كأس الأندية) عام ١٩٥٦؟", a: "ريال مدريد" },
+      { q: "ما أكبر عدد من نسخ دوري أبطال أوروبا فازت بها كلوب واحدة؟", a: "ريال مدريد — ١٥ نسخة حتى ٢٠٢٤" },
+      { q: "من هو حارس مرمى ألمانيا في كأس العالم ٢٠١٤؟", a: "مانويل نوير" },
+      { q: "ما الدوري الإنجليزي الذي فاز به ليستر سيتي بصورة مفاجئة؟", a: "الدوري الإنجليزي الممتاز ٢٠١٥-٢٠١٦" },
+    ],
+    400: [
+      { q: "ما قانون الـ'FFP' في كرة القدم الأوروبية وما الهدف منه؟", a: "قانون الاستدامة المالية — يمنع الأندية من الإنفاق أكثر من إيراداتها تجنباً للديون والإفلاس" },
+      { q: "ما الفرق بين نظام الضغط الألماني (Gegenpressing) ونظام الانتظار الإيطالي (Catenaccio)؟", a: "Gegenpressing: استعادة الكرة بشكل جماعي فوري بعد الفقدانها قرب مرمى الخصم — Catenaccio: سور دفاعي محكم والاعتماد على الهجمات المرتدة" },
+      { q: "ما القصة الكاملة لـ'مباراة المئة سنة' بين إنجلترا واسكتلندا؟", a: "أقدم مباراة دولية في التاريخ — لعبت في ١٨٧٢ في غلاسكو وانتهت بالتعادل ٠-٠ — تُعدّ المباراة الدولية الأولى رسمياً" },
+      { q: "ما دور يوهان كرويف في تطور كرة القدم الحديثة كلاعباً ومدرباً؟", a: "كلاعب: جسّد الكرة الشاملة الهولندية (Total Football) — كمدرب: أسّس فلسفة برشلونة التكتيكية (تيكي-تاكا) التي أنجبت غوارديولا وجيلاً كاملاً" },
+      { q: "ما التغييرات التكتيكية التي أحدثتها ألمانيا قبل وأثناء كأس العالم ٢٠١٤؟", a: "التخلي عن الـ٤-٢-٣-١ التقليدي — نظام بدون مهاجم صريح (false 9) — ضغط عالٍ وسرعة تبادل — أسلوب خروج من الضغط من الظهير" },
+    ],
+    600: [
+      { q: "كيف غيّرت ثورة تحليل البيانات (analytics) طريقة بناء الفرق وقراءة المباريات؟", a: "xG (الأهداف المتوقعة) — PPDA (الضغط) — progressive passes — أصبحت القرارات الانتقالية قائمة على إحصاءات لا حدس — أندية مثل ليفربول وبايرن تُدار بـ data science teams" },
+      { q: "ما الجدل الأخلاقي والاقتصادي حول ملكية الصناديق السيادية للأندية كنيوكاسل وسيتي وPSG؟", a: "تمويل غير محدود يُشوّه المنافسة — اتهامات بالغسيل الرياضي (sportwashing) — تعارض مع مبدأ FFP — لكن يخلق فرص عمل ويطور البنية التحتية" },
+      { q: "ما أثر نظام بوسمان (Bosman ruling ١٩٩٥) على سوق انتقالات اللاعبين في أوروبا؟", a: "أعطى اللاعبين حق الانتقال مجاناً بعد انتهاء عقودهم — ثوّر سوق الرواتب — قوّى مراكز اللاعبين — ضخّم ميزانيات الانتقالات بشكل دراماتيكي" },
+    ],
+  },
 
-  "🌍 جغرافيا وعواصم العالم": [
-    { pts: 200, q: "ما عاصمة أستراليا؟", a: "كانبيرا — وليست سيدني أو ملبورن" },
-    { pts: 200, q: "ما أطول نهر في العالم؟", a: "النيل (٦٦٥٠ كم) — يُختلف فيه مع الأمازون" },
-    { pts: 400, q: "ما أصغر دولة في العالم مساحةً وأين تقع؟", a: "الفاتيكان — داخل روما، إيطاليا، ٠.٤٤ كم²" },
-    { pts: 400, q: "ما المضيق الذي يفصل بين آسيا وأمريكا الشمالية؟", a: "مضيق بيرينغ — يفصل روسيا عن ألاسكا بعرض ٨٢ كم" },
-    { pts: 600, q: "ما الدولة الوحيدة التي تمتلك حدوداً مع أكبر عدد من الدول الأخرى وكم عددها؟", a: "الصين — تحدّها ١٤ دولة" },
-    { pts: 600, q: "لماذا تُعدّ نيوزيلندا من الدول الأكثر عزلاً جيولوجياً وما الأثر التطوري لذلك؟", a: "انفصلت عن قارة غوندوانا منذ ٨٠ مليون سنة قبل ظهور الثدييات — أدى ذلك إلى تطور طيور لا تطير كالكيوي بدلاً من ثدييات مفترسة" },
-  ],
+  "🧬 علوم وبيولوجيا": {
+    200: [
+      { q: "ما عدد كروموسومات الإنسان؟", a: "٤٦ كروموسوماً (٢٣ زوجاً)" },
+      { q: "ما وظيفة البنكرياس؟", a: "إفراز الإنسولين والجلوكاجون لتنظيم السكر في الدم — وإنزيمات هضمية" },
+      { q: "ما المادة التي تمنح الدم لونه الأحمر؟", a: "الهيموغلوبين" },
+      { q: "ما أسرع حيوان بري في العالم؟", a: "الفهد — يصل لـ١٢٠ كم/ساعة" },
+      { q: "ما أكبر عضو في جسم الإنسان؟", a: "الجلد" },
+      { q: "كم عدد عظام جسم الإنسان البالغ؟", a: "٢٠٦ عظمة" },
+      { q: "ما وظيفة الميتوكوندريا في الخلية؟", a: "توليد الطاقة (ATP) — تُسمى 'مصنع الطاقة'" },
+      { q: "ما اسم العالم الذي اكتشف بنية DNA؟", a: "واتسون وكريك — ١٩٥٣م (مع مساهمة روزالند فرانكلين)" },
+      { q: "ما الفرق بين الخلية حقيقية النواة وبدائيتها؟", a: "حقيقية النواة (Eukaryote): لها نواة مغلفة — بدائية (Prokaryote): بلا نواة محددة كالبكتيريا" },
+      { q: "ما عدد أجزاء الدماغ الرئيسية؟", a: "ثلاثة رئيسية: المخ — المخيخ — جذع الدماغ" },
+      { q: "ما المادة الكيميائية التي تُفرزها المخية عند الشعور بالسعادة؟", a: "الدوبامين والسيروتونين" },
+      { q: "ما أطول عظمة في جسم الإنسان؟", a: "عظمة الفخذ (الفيمور)" },
+    ],
+    400: [
+      { q: "ما الفرق بين الطفرة الجينية والتحوّل الجيني؟", a: "الطفرة: تغيير في تسلسل DNA — التحوّل: انتقال مادة جينية من خلية لأخرى (في البكتيريا غالباً)" },
+      { q: "كيف تعمل اللقاحات على مستوى الجهاز المناعي؟", a: "تُعرّض الجهاز المناعي لمستضد ضعيف أو جزء منه — الجهاز ينتج أجسام مضادة وخلايا ذاكرة — عند التعرض الحقيقي يستجيب سريعاً" },
+      { q: "ما الفرق بين الانتخاب الطبيعي والانتخاب الجنسي في نظرية داروين؟", a: "الطبيعي: البقاء للأصلح لتكيّف البيئة — الجنسي: اختيار الشريك للصفات التي تزيد فرص التزاوج وليس البقاء فقط" },
+      { q: "ما مبدأ الحتمية الجينية وما نقده من علم إبيجينيتكس؟", a: "الحتمية الجينية: الجينات تُحدد الصفات — الإبيجينيتكس ينقدها: البيئة والتجربة تُعدّل تعبير الجينات دون تغيير التسلسل — الجين ليس مصيراً ثابتاً" },
+      { q: "ما التحديات العلمية والأخلاقية لتقنية CRISPR في التعديل الجيني؟", a: "قدرة هائلة على تصحيح الأمراض الوراثية — لكن خطر التعديل غير المقصود (off-target) — وأسئلة أخلاقية حول الأطفال المُصمَّمين جينياً وتفاوت الوصول" },
+    ],
+    600: [
+      { q: "ما الفرق بين الوعي كظاهرة بيولوجية وكمشكلة فلسفية (The Hard Problem)?", a: "الوعي البيولوجي قابل للدراسة عبر الدماغ — المشكلة الصعبة (تشالمرز): لماذا يتولّد إحساس ذاتي (qualia) من نشاط عصبي؟ لا نظرية مادية حتى الآن تُفسّر التجربة الذاتية" },
+      { q: "كيف تُشكّل ميكروبيوم الأمعاء نظاماً مستقلاً يؤثر على الدماغ والمناعة؟", a: "محور الأمعاء-الدماغ (gut-brain axis) يُرسل إشارات عصبية وهرمونية — البكتيريا تُنتج ناقلات عصبية كالسيروتونين — تغيّر الميكروبيوم يرتبط باكتئاب والتهابات وسمنة" },
+      { q: "ما الدليل الجيني على أن البشر الحديثين تزاوجوا مع إنسان نياندرتال؟", a: "تسلسل جينوم نياندرتال ٢٠١٠ (أحمد بابو) أثبت أن ١–٤٪ من DNA سكان خارج أفريقيا مصدره نياندرتال — وهو دليل على تزاوج لا على انحدار مشترك فحسب" },
+    ],
+  },
 
-  "🎵 موسيقى عالمية": [
-    { pts: 200, q: "من هو مؤلف سيمفونية رقم ٥ الشهيرة التي تبدأ بـ 'تا تا تا تاااا'؟", a: "لودفيغ فان بيتهوفن" },
-    { pts: 200, q: "في أي مدينة تأسّست فرقة The Beatles؟", a: "ليفربول — إنجلترا" },
-    { pts: 400, q: "ما الفرق بين موسيقى Jazz و Blues من حيث الأصل والبنية؟", a: "Blues نشأ في جنوب أمريكا من موسيقى العبيد — بنيته ١٢ مقياساً ثابتة. Jazz تطور منه في نيو أورليانز وأضاف الارتجال والتعقيد التناغمي" },
-    { pts: 400, q: "من هو المؤلف الموسيقي الذي كتب أوبرا 'ترافياتا' و'ريغوليتو' و'عايدة'؟", a: "جوزيبي فيردي" },
-    { pts: 600, q: "ما البنية الموسيقية المعروفة بـ 'Sonata Form' وكيف تتركب؟", a: "تتكون من: Exposition (عرض الثيمات) — Development (تطويرها) — Recapitulation (إعادتها) وأحياناً Coda للختام" },
-    { pts: 600, q: "ما الفرق بين المقام الكبير (Major) والمقام الصغير (Minor) موسيقياً ونفسياً؟", a: "Major يعتمد على نمط تدرج معين (W-W-H-W-W-W-H) ويُحدث إحساساً بالبهجة — Minor تدرجه مختلف ويُحدث إحساساً بالحزن أو الغموض" },
-  ],
+  "🌍 جغرافيا عالمية": {
+    200: [
+      { q: "ما عاصمة البرازيل؟", a: "برازيليا" },
+      { q: "ما أطول سلسلة جبال في العالم؟", a: "جبال الأنديز في أمريكا الجنوبية" },
+      { q: "ما أعمق بحيرة في العالم؟", a: "بحيرة بايكال في روسيا" },
+      { q: "ما أكبر قارات العالم مساحةً؟", a: "آسيا" },
+      { q: "ما أصغر دولة في العالم؟", a: "الفاتيكان" },
+      { q: "كم عدد دول العالم المعترف بها في الأمم المتحدة؟", a: "١٩٣ دولة" },
+      { q: "ما الدولة الوحيدة ذات الحدود مع جميع دول أمريكا الجنوبية باستثناء شيلي والإكوادور؟", a: "البرازيل" },
+      { q: "أين تقع جزر المالديف وما خطر تغيّر المناخ عليها؟", a: "المحيط الهندي — تهددها الفيضانات بسبب ارتفاع منسوب البحر" },
+      { q: "ما اسم البحر الذي يفصل أوروبا عن أفريقيا؟", a: "البحر الأبيض المتوسط" },
+      { q: "ما أعلى قمة في العالم؟", a: "جبل إيفرست — ٨٨٤٩م" },
+      { q: "ما أكبر صحراء في العالم؟", a: "الصحراء القطبية الجنوبية (أنتاركتيكا) — ثم الصحراء الكبرى" },
+      { q: "ما الدولتان اللتان تتقاسمان جزيرة هيسبانيولا؟", a: "هايتي والجمهورية الدومينيكية" },
+    ],
+    400: [
+      { q: "ما الفرق بين خط الطول وخط العرض وكيف نستخدمهما في تحديد الموقع؟", a: "خط العرض: المسافة شمالاً/جنوباً عن خط الاستواء (٠–٩٠) — خط الطول: المسافة شرقاً/غرباً عن خط غرينتش (٠–١٨٠) — معاً يُحددان أي نقطة على الأرض" },
+      { q: "ما الأسباب الجيولوجية لكثرة الزلازل في دول حلقة النار حول المحيط الهادئ؟", a: "تتلاقى صفائح تكتونية متعددة — الانزلاق والاصطدام والاندساس يُولّد توترات ضخمة تتحرر كزلازل وبراكين" },
+      { q: "لماذا تُعدّ هولندا نموذجاً في استصلاح الأراضي من البحر؟", a: "الـPolder: استخدام السدود والضخ لاستصلاح أراضٍ أقل من مستوى البحر — ٢٦٪ من مساحتها أقل من منسوب البحر — نظام معقد من القنوات والأهوسة" },
+      { q: "ما دلالة موقع مضيق هرمز الاستراتيجي للاقتصاد العالمي؟", a: "يمر عبره ٢٠٪ من تجارة النفط العالمية — تسيطر عليه إيران وسلطنة عُمان — أي اضطراب يُهدد الاقتصاد العالمي مباشرةً" },
+    ],
+    600: [
+      { q: "كيف تؤثر التيارات البحرية كـ 'تيار الخليج' على مناخ أوروبا الغربية؟", a: "ينقل مياهاً دافئة من خليج المكسيك شمالاً — يرفع درجات الحرارة في بريطانيا وشمال أوروبا بـ٥–١٠ درجات — توقفه بسبب ذوبان جليد القطب يُهدد بتبريد مفاجئ" },
+      { q: "ما نظرية 'Heartland' لماكيندر وكيف أثّرت على الجيوسياسة القرن العشرين؟", a: "من يسيطر على قلب آسيا يسيطر على جزيرة العالم (أوروبا-آسيا-أفريقيا) ومن يسيطر عليها يسيطر على العالم — أثّرت على التفكير الاستراتيجي الغربي في الحرب الباردة ضد الاتحاد السوفيتي" },
+      { q: "كيف يُفسّر مبدأ الصفائح التكتونية توزيع الثروات المعدنية في العالم؟", a: "التقاء الصفائح يُنتج نشاطاً حرارياً يرفع المعادن — مناطق الاندساس غنية بالنحاس (تشيلي-بيرو) — التباعد يُنتج قيعان محيطية غنية بالمنغنيز — ارتباط واضح بين الخرائط الجيولوجية والثروات" },
+    ],
+  },
 
-  "🍕 مطبخ عالمي": [
-    { pts: 200, q: "من أي بلد نشأت البيتزا تحديداً؟", a: "إيطاليا — نابولي تحديداً" },
-    { pts: 200, q: "ما المكوّن الرئيسي الذي يُميز المطبخ التايلاندي عن غيره؟", a: "التوازن بين الحامض والحلو والمالح والحار في طبق واحد — مع استخدام العشب والليمون وجوز الهند" },
-    { pts: 400, q: "ما الفرق بين Sushi و Sashimi في المطبخ الياباني؟", a: "Sushi: أرز مُتبّل مع مكونات متنوعة — Sashimi: شرائح سمك نيء فقط بدون أرز" },
-    { pts: 400, q: "من أي حضارة نشأت الباستا وكيف وصلت إلى إيطاليا؟", a: "الأصل محل جدل — قيل الصين عبر ماركو بولو، لكن الراجح أن إيطاليا طوّرتها بشكل مستقل أو عبر العرب في صقلية" },
-    { pts: 600, q: "ما تقنية Sous Vide في الطهي وما مزاياها العلمية على الطرق التقليدية؟", a: "طهي الطعام في كيس مفرغ الهواء داخل ماء بدرجة حرارة ثابتة ومنخفضة — تحافظ على العصارة والبروتين ولا تُجفّف اللحم كما في الشواء المباشر" },
-    { pts: 600, q: "ما الفرق الكيميائي بين التخمير (Fermentation) والتعفّن (Putrefaction) وكيف نُفرّق بينهما في الطعام؟", a: "التخمير: عملية لاهوائية محكومة بكائنات نافعة تنتج حمضاً أو كحولاً — التعفّن: تحلّل بروتيني بواسطة بكتيريا ضارة. المؤشر: التخمير يُعطي رائحة حامضة لاذعة، التعفّن رائحة كبريتية" },
-  ],
+  "💻 تكنولوجيا وذكاء اصطناعي": {
+    200: [
+      { q: "ما معنى اختصار AI؟", a: "Artificial Intelligence — الذكاء الاصطناعي" },
+      { q: "من مؤسس شركة Tesla وSpaceX؟", a: "إيلون ماسك" },
+      { q: "ما اسم نظام تشغيل هواتف Apple؟", a: "iOS" },
+      { q: "ما معنى CPU؟", a: "Central Processing Unit — وحدة المعالجة المركزية" },
+      { q: "ما أكبر شركة تقنية في العالم من حيث القيمة السوقية؟", a: "تتغير — Apple أو Microsoft أو Nvidia (٢٠٢٤)" },
+      { q: "ما اسم لغة البرمجة التي طوّرتها Google؟", a: "Go (Golang)" },
+      { q: "ما الفرق بين RAM و ROM؟", a: "RAM: ذاكرة مؤقتة تُحذف عند الإيقاف — ROM: ذاكرة دائمة لا تتغير" },
+      { q: "من أسّس شركة Amazon؟", a: "جيف بيزوس — ١٩٩٤م" },
+      { q: "ما معنى HTTP وHTTPS؟", a: "HyperText Transfer Protocol — S تعني Secure (مُشفَّر)" },
+      { q: "ما أول متصفح إنترنت واسع الانتشار؟", a: "Mosaic — ١٩٩٣م" },
+      { q: "ما الفرق بين الإنترنت والويب؟", a: "الإنترنت: شبكة الشبكات (البنية التحتية) — الويب: تطبيق عليها يستخدم HTTP لتبادل الصفحات" },
+    ],
+    400: [
+      { q: "ما الفرق بين Machine Learning وDeep Learning؟", a: "ML: خوارزميات تتعلم من بيانات بهندسة بشرية للميزات — DL: شبكات عصبية عميقة تستخرج الميزات تلقائياً — DL فرع من ML" },
+      { q: "ما المقصود بـ 'Overfitting' في تدريب نماذج الذكاء الاصطناعي وكيف يُعالَج؟", a: "النموذج يحفظ بيانات التدريب بدل تعلّم الأنماط — يُعالَج بـ Regularization أو Dropout أو زيادة البيانات" },
+      { q: "ما مبدأ عمل Blockchain وما تطبيقاته خارج العملات الرقمية؟", a: "سجل موزّع غير قابل للتعديل — كل كتلة تحتوي تجزئة الكتلة السابقة — تطبيقات: عقود ذكية — سلاسل توريد — تصويت إلكتروني — التحقق من الهوية" },
+      { q: "ما الفرق بين الحوسبة السحابية العامة والخاصة والهجينة؟", a: "العامة: موارد مشتركة على الإنترنت (AWS) — الخاصة: بنية تحتية حصرية — الهجينة: مزيج للأحمال الحساسة والعادية" },
+      { q: "ما مفهوم Zero-Day Vulnerability وما خطورته؟", a: "ثغرة أمنية في برنامج لا يعلم بها المطوّر بعد — يُمكن استغلالها قبل إصدار تصحيح — من أخطر أدوات الهجوم السيبراني" },
+    ],
+    600: [
+      { q: "ما التحديات التقنية الأساسية التي تمنع تحقيق الذكاء الاصطناعي العام (AGI) حتى الآن؟", a: "نقص الاستدلال المنطقي العميق — عدم القدرة على التعلم من أمثلة قليلة (few-shot) بكفاءة بشرية — غياب الفهم السببي الحقيقي — الفجوة بين اللغة والعالم الفيزيائي" },
+      { q: "ما الأبعاد الأخلاقية لاستخدام الذكاء الاصطناعي في القضاء والتوظيف؟", a: "التحيّز الخوارزمي يُعيد إنتاج التمييز — غياب الشفافية (Black Box) يُعيق الطعن — المسؤولية القانونية غامضة — خطر تعزيز الفجوات الاجتماعية القائمة" },
+      { q: "كيف تختلف معمارية Transformer عن الشبكات العصبية التكرارية وما أثر ذلك على نماذج اللغة الكبيرة؟", a: "RNN تُعالج تسلسلياً تتراكم فيه الأخطاء في السياقات الطويلة — Transformer يُعالج بالتوازي عبر Self-Attention مما يُمكّنه من ربط الكلمات البعيدة — أتاح تدريب نماذج ضخمة كـGPT" },
+    ],
+  },
 
-  "📚 أدب عالمي": [
-    { pts: 200, q: "من كتب رواية '١٩٨٤'؟", a: "جورج أورويل" },
-    { pts: 200, q: "في رواية الأمير الصغير، من أي كوكب جاء الأمير الصغير؟", a: "الكوكب B-612" },
-    { pts: 400, q: "ما الرواية التي افتُتحت بجملة 'Call me Ishmael' وما موضوعها؟", a: "Moby Dick لهيرمان ملفيل — عن صياد حوت مهووس بقتل حوت أبيض ضخم" },
-    { pts: 400, q: "من هو الكاتب الكولومبي الحائز نوبل الآداب وما روايته الأشهر؟", a: "غابريال غارسيا ماركيز — رواية 'مئة عام من العزلة'" },
-    { pts: 600, q: "ما مفهوم 'الواقعية السحرية' وكيف يختلف عن الخيال العلمي والفانتازيا؟", a: "الواقعية السحرية تدمج العناصر السحرية في واقع يومي عادي دون استغراب — الفانتازيا تبني عالماً موازياً — والخيال العلمي يُبرر السحر علمياً" },
-    { pts: 600, q: "ما الفرق بين الراوي العليم والراوي المحدود في النظرية الأدبية وأثر ذلك على القارئ؟", a: "العليم: يعلم أفكار كل الشخصيات ويرى كل شيء — المحدود: مقيّد بمنظور شخصية واحدة، يخلق توتراً وغموضاً أكثر لأن القارئ محدود المعلومات" },
-  ],
+  "🏛️ تاريخ عالمي": {
+    200: [
+      { q: "في أي عام سقط جدار برلين؟", a: "١٩٨٩م" },
+      { q: "من أمر بقصف هيروشيما؟", a: "الرئيس الأمريكي هاري ترومان" },
+      { q: "في أي عام بدأت الحرب العالمية الأولى؟", a: "١٩١٤م" },
+      { q: "من هو مؤسس الإمبراطورية المغولية؟", a: "جنكيز خان" },
+      { q: "ما اسم الوثيقة التي وقّعها الملك جون الإنجليزي عام ١٢١٥؟", a: "الماغنا كارتا (الميثاق الأعظم)" },
+      { q: "في أي عام فتح العثمانيون القسطنطينية؟", a: "١٤٥٣م" },
+      { q: "من قاد الثورة الفرنسية الأهم بعد سقوط الباستيل؟", a: "الجمعية الوطنية ثم القوى الشعبية (الجاكوبيون بقيادة روبسبيير)" },
+      { q: "ما اسم حضارة أمريكا الوسطى التي بنت أهراماتها المدرجة؟", a: "المايا والأزتيك" },
+      { q: "في أي عام اكتشف كولومبس أمريكا؟", a: "١٤٩٢م" },
+      { q: "من هو أول إنسان يمشي على سطح القمر؟", a: "نيل أرمسترونغ — ١٩٦٩م" },
+      { q: "ما اسم الإمبراطورية التي امتدت من آسيا الوسطى حتى أوروبا الشرقية في القرن الثالث عشر؟", a: "الإمبراطورية المغولية" },
+      { q: "في أي عام سقوط الاتحاد السوفيتي؟", a: "١٩٩١م" },
+    ],
+    400: [
+      { q: "ما أسباب انهيار الإمبراطورية الرومانية الغربية عام ٤٧٦م؟", a: "الضغط الخارجي للبرابرة — الأزمة الاقتصادية والضرائب — تفكك الجيش — الصراعات الداخلية على السلطة — تقسيم الإمبراطورية" },
+      { q: "كيف أثّرت الثورة الصناعية على الهيكل الاجتماعي في أوروبا القرن التاسع عشر؟", a: "صعود البروليتاريا الصناعية — نمو الطبقة الوسطى البرجوازية — التحضر السريع — تراجع الاقتصاد الزراعي — ظهور الاشتراكية كرد فعل" },
+      { q: "ما الفرق بين حرب الثلاثين سنة وحرب المئة سنة في أهدافها ونتائجها؟", a: "الثلاثين: صراع ديني وأوروبي انتهى بوستفاليا ومبدأ السيادة — المئة سنة: صراع إنجليزي فرنسي على العرش انتهى بنشأة الهوية الفرنسية القومية" },
+      { q: "ما دور طريق الحرير في تبادل الحضارات والأوبئة معاً؟", a: "نقل البضائع (حرير — بهارات — ذهب) والأفكار (الورق — البارود — الصفر) والأديان (البوذية — الإسلام) — ونقل أيضاً الطاعون الأسود الذي قضى على ثلث أوروبا" },
+      { q: "ما التحولات التي أحدثها الإصلاح البروتستانتي على السياسة الأوروبية؟", a: "كسر احتكار روما الديني والسياسي — قوّى سلطة الأمراء المحليين — أسّس لعلمنة الدولة التدريجية — أشعل الصراعات الدينية كالحرب الثلاثينية" },
+    ],
+    600: [
+      { q: "كيف أثّر اختراع المطبعة على مسار التاريخ الأوروبي؟", a: "ديمقراطية المعرفة — انتشار الإنجيل بالعامية — تسريع الإصلاح الديني — بناء هوية قومية عبر اللغة المكتوبة الموحدة — تهديد احتكار الكنيسة والنبلاء للمعلومات" },
+      { q: "ما نقد المؤرخ الاقتصادي أبيجيت بانرجي للنظرية التقليدية عن أسباب ثروة الغرب؟", a: "يرى أن الجغرافيا والمؤسسات أهم من العرق أو الثقافة — التفاوت ليس حتمياً — سياسات غلطت الدول الغنية تجاه الفقيرة تُفسّر الفجوة بقدر لا يقل عن 'التفوق الغربي'" },
+      { q: "كيف غيّر الحرب الباردة الفهمَ الغربي للتاريخ عبر 'نهاية التاريخ' لفوكوياما؟", a: "ادّعى فوكوياما أن انتصار الليبرالية يعني نهاية الصراع الأيديولوجي — انتُقد بقوة: صعود الإسلام السياسي والصين والقومية يُثبت أن التاريخ لم ينته — بل ربما يُعاد" },
+    ],
+  },
 
-  "🏛️ تاريخ عالمي": [
-    { pts: 200, q: "في أي عام سقط جدار برلين؟", a: "١٩٨٩" },
-    { pts: 200, q: "من هو أول إنسان يمشي على القمر؟", a: "نيل أرمسترونغ — ١٩٦٩" },
-    { pts: 400, q: "ما أسباب اندلاع الثورة الفرنسية عام ١٧٨٩ وما شعارها الشهير؟", a: "الإفلاس المالي للدولة، والفوارق الطبقية الحادة، وتأثير التنوير. شعارها: حرية، مساواة، إخاء" },
-    { pts: 400, q: "من هو الإمبراطور الذي وحّد الصين لأول مرة عام ٢٢١ق.م وأسّس سلالة تشين؟", a: "تشين شي هوانغ — أمر ببناء سور الصين العظيم وحرق الكتب" },
-    { pts: 600, q: "ما الفرق الجوهري بين حرب الثلاثين سنة وحرب المئة سنة من حيث الطابع والأطراف؟", a: "حرب الثلاثين سنة (١٦١٨-١٦٤٨): صراع ديني-سياسي أوروبي أُنهي بمعاهدة وستفاليا. حرب المئة سنة (١٣٣٧-١٤٥٣): صراع إنجليزي-فرنسي على العرش انتهى بطرد إنجلترا من فرنسا" },
-    { pts: 600, q: "ما النظام الذي نشأ عن معاهدة وستفاليا ١٦٤٨ وكيف أثّر على العلاقات الدولية حتى اليوم؟", a: "النظام الوستفالي: مبدأ السيادة الوطنية وعدم التدخل في شؤون الدول — أسّس لمفهوم الدولة-الأمة الحديثة وهو حجر الزاوية في القانون الدولي حتى الآن" },
-  ],
+  "📚 أدب عالمي": {
+    200: [
+      { q: "من كتب رواية '١٩٨٤'؟", a: "جورج أورويل" },
+      { q: "ما اسم صاحب رواية 'الجريمة والعقاب'؟", a: "فيودور دوستويفسكي" },
+      { q: "من كتب 'مئة عام من العزلة'؟", a: "غابريال غارسيا ماركيز" },
+      { q: "ما اسم روايات هاري بوتر وكاتبتها؟", a: "J.K. رولينج" },
+      { q: "من كتب مسرحية هاملت؟", a: "وليام شكسبير" },
+      { q: "ما أشهر رواية لـ ليو تولستوي؟", a: "الحرب والسلام — أو أنا كارنينا" },
+      { q: "من كتب 'الشيخ والبحر'؟", a: "إرنست هيمنغواي" },
+      { q: "ما اسم رواية كافكا الأشهر؟", a: "المسخ (Metamorphosis)" },
+      { q: "من كتب رواية 'اسم الوردة'؟", a: "أومبرتو إيكو" },
+      { q: "في أي بلد يجري الحدث في رواية 'الأمير الصغير'؟", a: "الرواية تجري في الصحراء ثم في كواكب خيالية" },
+      { q: "من كتب 'موبي ديك'؟", a: "هيرمان ملفيل" },
+      { q: "ما أشهر أعمال نجيب محفوظ؟", a: "ثلاثية القاهرة — أولاد حارتنا — اللص والكلاب" },
+    ],
+    400: [
+      { q: "ما مفهوم 'الواقعية السحرية' وأبرز ممثليه في الأدب اللاتيني؟", a: "دمج العجائبي والواقعي في نص دون استغراب — ماركيز وخورخي لويس بورخيس وإيزابيل الليندي من أبرز ممثليه" },
+      { q: "ما الفرق بين الرواية الديستوبية والمدينة الفاضلة (يوتوبيا)؟", a: "اليوتوبيا: مجتمع مثالي مكتمل — الديستوبيا: مجتمع تخيّلي قمعي ضاغط يصوّر المشاعر تجاه الحاضر (أورويل — هاكسلي — أتوود)" },
+      { q: "ما الطريقة السردية 'تيار الوعي' وأبرز من وظّفها؟", a: "تُصوّر الأفكار والمشاعر كما تتدفق دون تنظيم — جيمس جويس في أوليسيس — فيرجينيا وولف في السيدة دالاوي" },
+      { q: "كيف عكست روايات الحرب عند هيمنغواي رؤيته الفلسفية للعبث؟", a: "أبطاله لا بطولة حقيقية فيهم — الموت عشوائي — الإيمان بالشجاعة الهادئة في مواجهة العدمية (Code Hero) — رفض الخطاب البطولي الزائف" },
+      { q: "ما أوجه التشابه والاختلاف بين نجيب محفوظ وبلزاك في تصوير المجتمع؟", a: "الاثنان يُشيّدان ملحمة مجتمعية — بلزاك: باريس الصاعدة برجوازياً — محفوظ: القاهرة الشعبية بين التقليد والحداثة — بلزاك أكثر عددية — محفوظ أكثر روحانية وتصوفاً" },
+    ],
+    600: [
+      { q: "ما أزمة 'موت المؤلف' عند رولان بارت وما أثرها على نقد الأدب؟", a: "المعنى لا يُحدده قصد المؤلف — القارئ يُنتج المعنى عند القراءة — حرّر النص من التفسير الواحد — فتح باب نقد متعدد لكن اتُّهم بالعدمية" },
+      { q: "كيف يُعبّر كافكا عن الاغتراب الحديث في المسخ والمحاكمة؟", a: "غريغور ساميسا يتحول لحشرة كتجسيد للاغتراب العملي والعائلي — يوسف ك. يُحاكَم دون تهمة: البيروقراطية كقوة مجهولة قاهرة — المؤسسة الحديثة تحوّل الإنسان لشيء" },
+      { q: "ما تأثير فلسفة نيتشه على الأدب الوجودي عند كامو وسارتر؟", a: "موت الإله → لا معنى خارجياً — كامو: العبث حقيقة والتمرد هو الجواب (سيزيف) — سارتر: الوجود يسبق الجوهر والحرية عبء لا هروب منه — كلاهما يستلف مفهوم الإنسان الخالق لقيمته" },
+    ],
+  },
 
-  "🧠 فلسفة وتفكير": [
-    { pts: 200, q: "ما المقصود بـ 'حلاقة أوكام' كمبدأ فلسفي؟", a: "لا تُضاعف الكيانات بدون ضرورة — اختر دائماً التفسير الأبسط" },
-    { pts: 200, q: "من قال 'أنا أفكر إذن أنا موجود'؟", a: "ريني ديكارت" },
-    { pts: 400, q: "ما الفرق بين الفلسفة العقلانية والتجريبية وأبرز ممثليها؟", a: "العقلانية: المعرفة مصدرها العقل (ديكارت، ليبنيز) — التجريبية: المعرفة مصدرها الحواس والتجربة (لوك، هيوم)" },
-    { pts: 400, q: "ما مشكلة 'عربة الترام' (Trolley Problem) وماذا تكشف فلسفياً؟", a: "اختيار بين التدخل لإنقاذ ٥ بقتل واحد أو عدم التدخل. تكشف التعارض بين الأخلاق النفعية (الأكبر خير) والأخلاق الواجبية (لا تقتل مطلقاً)" },
-    { pts: 600, q: "ما المقصود بـ 'أزمة المعنى' عند نيتشه وما فكرة 'الإنسان الأعلى' كحل لها؟", a: "بعد 'موت الإله' (أي انهيار القيم الدينية) يفقد الإنسان مصدر معناه — الإنسان الأعلى يخلق قيمه الخاصة بإرادة قوة بدلاً من الاتكاء على الخارج" },
-    { pts: 600, q: "ما الفرق بين الفلسفة الظاهراتية (Phenomenology) عند هوسرل وهيدغر؟", a: "هوسرل: دراسة الوعي والظواهر كما تبدو للعقل (Epoché) — هيدغر: الوجود في العالم (Dasein) أسبق من الوعي، الإنسان منغمس في العالم لا ناظر إليه" },
-  ],
+  "🧠 فلسفة وتفكير نقدي": {
+    200: [
+      { q: "من قال 'أنا أفكر إذن أنا موجود'؟", a: "ريني ديكارت" },
+      { q: "ما المقصود بـ 'حلاقة أوكام'؟", a: "اختر دائماً أبسط تفسير ممكن يُفسّر الظاهرة" },
+      { q: "من هو مؤسس الفلسفة الوجودية الحديثة؟", a: "سورين كيركيغارد — أو جان بول سارتر بالمعنى الشعبي" },
+      { q: "ما الفرق بين المنطق الاستنباطي والاستقرائي؟", a: "الاستنباطي: من الكل إلى الجزء (إذا كل البشر فانون وأحمد بشر فأحمد فانٍ) — الاستقرائي: من الجزء إلى الكل (لاحظت ألف غراب أسود إذن كل الغربان سود)" },
+      { q: "ما المقصود بـ'مغالطة رجل القش' (Straw Man)؟", a: "تشويه حجة الخصم لتسهيل دحضها بدل الرد على حجته الأصلية" },
+      { q: "ما المقصود بالنسبية الأخلاقية؟", a: "الأخلاق تختلف بين الثقافات ولا يوجد معيار أخلاقي مطلق وكوني" },
+      { q: "من وضع نظرية 'العقد الاجتماعي' في صورتها السياسية الأشهر؟", a: "جان جاك روسو — وأيضاً لوك وهوبز" },
+      { q: "ما مشكلة 'غرفة ماري' الفلسفية؟", a: "ماري تعرف كل شيء عن الألوان نظرياً لكنها لم تَرَها — حين ترى الأحمر هل تعلم شيئاً جديداً؟ — تتعلق بإشكالية الـqualia والوعي" },
+      { q: "ما المقصود بـ 'مغالطة المنحدر الزلق'؟", a: "الادعاء بأن خطوة صغيرة ستؤدي حتماً لنتائج كارثية دون دليل على الضرورة" },
+    ],
+    400: [
+      { q: "ما الفرق بين الفلسفة التحليلية والقارية (Continental)?", a: "التحليلية: تُركّز على الدقة المنطقية ولغة الفلسفة (فيتغنشتاين — راسل) — القارية: تُعالج الوجود والثقافة والتاريخ (هيغل — هايدغر — ديريدا)" },
+      { q: "ما نقد كانط للتجريبيين والعقلانيين معاً؟", a: "التجريبيون صواب: المعرفة تبدأ بالتجربة — العقلانيون صواب: العقل يُبنّي التجربة عبر فئات قبلية (زمان — مكان — سببية) — لا يمكن المعرفة بدونهما معاً" },
+      { q: "ما أزمة 'مشكلة العقل-الجسد' وأبرز الحلول المقترحة؟", a: "كيف يرتبط الوعي غير المادي بالجسم المادي؟ — الثنائية (ديكارت) — المادية (الوعي نتاج الدماغ) — التوازي — الظهور (Emergence)" },
+      { q: "ما الفرق بين النفعية عند بنثام وميل؟", a: "بنثام: قياس اللذة كمياً — أي فعل يزيد مجموع السعادة هو الصواب. ميل: نوعية اللذة مهمة — لذات فكرية أرقى من جسدية — السعادة ليست كماً فحسب" },
+      { q: "ما مفهوم 'الدائرة التأويلية' عند هايدغر؟", a: "لفهم النص تحتاج فهم أجزائه — ولفهم الأجزاء تحتاج فهم الكل — لا نبدأ من الصفر بل من 'فهم مسبق' (Vorverständnis) — الفهم تدويري لا خطي" },
+    ],
+    600: [
+      { q: "كيف ترتبط فلسفة ما بعد البنيوية بالنقد السياسي في أعمال فوكو؟", a: "فوكو يُفكّك العلاقة بين المعرفة والسلطة — الخطابات تُنتج الحقيقة لا تكشفها — المؤسسات (سجن — مستشفى — مدرسة) أدوات تأديب وإنتاج ذوات خاضعة — لا ثورة بدون فهم كيف تعمل السلطة" },
+      { q: "ما الإسهام الفريد لفلسفة اللغة عند فيتغنشتاين المتأخر في 'التحقيقات الفلسفية'؟", a: "اللغة ليست صورة الواقع — المعنى في الاستخدام لا في التعريف — 'ألعاب اللغة' تُبيّن أن الكلمات تُوظَّف بحسب السياق الاجتماعي — حلّ مشاكل فلسفية بإظهارها أوهاماً لغوية" },
+      { q: "كيف يختلف مفهوم 'الآخر' عند سارتر وليفيناس؟", a: "سارتر: الآخر يُهدد حريتي ونظرته تُشيّئني (الجحيم هو الآخرون) — ليفيناس: الآخر وجه الآخر يطالبني أخلاقياً — المسؤولية تجاه الآخر أسبق من الوجود وهي أساس الأخلاق" },
+    ],
+  },
 
-  "🤝 سياسة واقتصاد": [
-    { pts: 200, q: "ما الفرق بين النظام الرأسمالي والاشتراكي في ملكية وسائل الإنتاج؟", a: "الرأسمالية: ملكية خاصة — الاشتراكية: ملكية جماعية أو دولة" },
-    { pts: 200, q: "ما المقصود بـ GDP وما الفرق بينه وبين GNP؟", a: "GDP: قيمة الإنتاج داخل حدود الدولة — GNP: قيمة إنتاج مواطنيها أينما كانوا" },
-    { pts: 400, q: "ما نظرية 'اليد الخفية' عند آدم سميث وما نقدها الرئيسي؟", a: "السوق الحر يُنظّم نفسه تلقائياً عبر المصلحة الذاتية لصالح الجميع — النقد: تتجاهل الاحتكار وتفاوت القوة وتفشل في السلع العامة والخارجيات السلبية" },
-    { pts: 400, q: "ما هي 'فخ ثيوسيديدس' وكيف يُطبَّق على العلاقة بين الصين وأمريكا؟", a: "عندما تصعد قوة جديدة تهدد قوة قائمة، الحرب تصبح أرجح — يُطبّقها بعض المحللين على صعود الصين ومخاوف أمريكا من فقدان هيمنتها" },
-    { pts: 600, q: "ما الفرق بين السياسة النقدية والمالية وكيف تتفاعلان في أوقات الأزمات؟", a: "النقدية: يُديرها البنك المركزي عبر أسعار الفائدة والكتلة النقدية — المالية: تُديرها الحكومة عبر الإنفاق والضرائب. في الأزمات قد تتضارب إذا رفع المركزي الفائدة بينما تُوسّع الحكومة إنفاقها" },
-    { pts: 600, q: "ما نقطة الخلاف الجوهرية بين كينز وهايك حول دور الدولة في الاقتصاد؟", a: "كينز: الدولة يجب أن تتدخل لتحفيز الطلب في الركود — هايك: التدخل يُشوّه السعر ويُراكم عدم الكفاءة والحل هو السوق الحر والانكماش الطبيعي" },
-  ],
+  "🕌 دين وحضارة إسلامية": {
+    200: [
+      { q: "ما عدد أركان الإسلام؟", a: "خمسة أركان" },
+      { q: "في أي مدينة يقع المسجد النبوي؟", a: "المدينة المنورة" },
+      { q: "من هو أول خليفة بعد النبي محمد ﷺ؟", a: "أبو بكر الصديق" },
+      { q: "ما اسم ليلة القدر التي يُقال إن نزل فيها القرآن؟", a: "ليلة القدر — في العشر الأواخر من رمضان" },
+      { q: "ما معنى كلمة 'إسلام' في اللغة العربية؟", a: "الاستسلام والانقياد لله" },
+      { q: "ما أشهر مساجد العالم الإسلامي الثلاثة المقدسة؟", a: "المسجد الحرام — المسجد النبوي — المسجد الأقصى" },
+      { q: "في أي عام هاجر النبي محمد ﷺ من مكة إلى المدينة؟", a: "٦٢٢م — وهو بداية التقويم الهجري" },
+      { q: "ما اسم الكتاب الذي جمع فيه البخاري أحاديث النبي؟", a: "صحيح البخاري" },
+      { q: "ما اسم أشهر عالم مسلم في الطب في العصور الوسطى؟", a: "ابن سينا" },
+      { q: "كيف يُسمى الأذان في الإسلام؟", a: "النداء للصلاة — يُؤدّيه المؤذن" },
+    ],
+    400: [
+      { q: "ما الفرق الجوهري بين الفقه المالكي والحنفي في أسلوب الاجتهاد؟", a: "المالكية: يعتمدون عمل أهل المدينة دليلاً إضافياً — الحنفية: أوسع استخداماً للقياس والرأي (ويُسمّون أهل الرأي)" },
+      { q: "ما إسهامات الإمام الشافعي في تأسيس علم أصول الفقه؟", a: "أول من وضع منهجاً منظماً للتشريع في كتاب 'الرسالة' — رتّب مصادر الفقه: قرآن — سنة — إجماع — قياس" },
+      { q: "ما أبرز إسهامات الحضارة الإسلامية في علم الرياضيات؟", a: "الخوارزمي: الجبر والأرقام الهندية-العربية — الكندي: التشفير — ابن الهيثم في الهندسة البصرية — نقل الصفر والعشريات إلى أوروبا" },
+      { q: "ما دور بيت الحكمة في بغداد في نقل المعرفة اليونانية؟", a: "مركز ترجمة ضخم (القرن الثامن-العاشر) — ترجم أرسطو وجالينوس وبطليموس — حوّل بغداد لعاصمة علمية عالمية" },
+    ],
+    600: [
+      { q: "ما الجدل الكلامي حول خلق القرآن في عهد المأمون وما تداعياته السياسية؟", a: "المأمون تبنّى رأي المعتزلة (القرآن مخلوق) — أجرى محنة للعلماء — قاوم أحمد بن حنبل — أسّس الجدل لتوتر دائم بين الدولة والعلماء حول من يُفسّر الدين" },
+      { q: "كيف يتعامل الفقه الإسلامي الكلاسيكي مع مفهوم 'المصلحة المرسلة' وحدوده؟", a: "المصلحة غير المنصوص عليها كمصدر تشريعي أجازها المالكية والحنابلة — الشرط: ألا تعارض نصاً — الغزالي اشترط الضرورة — ابن تيمية وسّع نطاقها — هي أساس كثير من التشريعات المعاصرة" },
+      { q: "ما الفرق الفلسفي بين مفهوم 'العقل' عند ابن رشد وعند الغزالي؟", a: "ابن رشد: العقل مستقل وقادر على بلوغ الحقيقة الفلسفية — الفلسفة والدين متوافقان. الغزالي: العقل محدود أمام الحقائق الدينية — دافع عن ما يعجز عنه العقل في 'تهافت الفلاسفة'" },
+    ],
+  },
+
+  "🎭 مسرح وأدب عربي": {
+    200: [
+      { q: "من هو أبو المسرح العربي؟", a: "مارون النقاش اللبناني" },
+      { q: "ما اسم أشهر مسرحية لتوفيق الحكيم؟", a: "أهل الكهف — أو يا طالع الشجرة" },
+      { q: "من كتب 'حديث الأربعاء'؟", a: "طه حسين" },
+      { q: "ما اسم أول رواية عربية حديثة يُعترف بها عموماً؟", a: "زينب لمحمد حسين هيكل — ١٩١٤م" },
+      { q: "من هو الشاعر الملقب بـ'أمير الشعراء'؟", a: "أحمد شوقي" },
+      { q: "من هو شاعر النيل؟", a: "حافظ إبراهيم" },
+      { q: "من كتب 'الأيام'؟", a: "طه حسين" },
+      { q: "ما اسم أشهر رواية لإحسان عبد القدوس؟", a: "لا تطفئ الشمس — أو أنا حرة" },
+      { q: "من هو شاعر فلسطين الأشهر؟", a: "محمود درويش" },
+    ],
+    400: [
+      { q: "ما الذي ميّز أسلوب يوسف إدريس في القصة القصيرة المصرية؟", a: "الواقعية الاجتماعية الحادة — تصوير الفقراء والهامشيين — لغة عامية حية — بنية قصصية مكثفة بلا حشو" },
+      { q: "ما موضوع رواية 'عصر الحب' لنجيب محفوظ وما علاقتها بثلاثيته؟", a: "ليست من الثلاثية — تصوّر مجتمعاً مثالياً مستقبلياً خال من الشرور — تُعكس تجربة ناصرية إيجابية في بداياتها" },
+      { q: "كيف جسّد توفيق الحكيم أزمة المثقف المصري في رواياته؟", a: "المثقف منفصل عن واقعه — يتأمل ولا يفعل — أهل الكهف يصحون في عالم لا يفهمونه — عودة الروح: التوق للحياة مقابل الجمود الفكري" },
+      { q: "ما أثر ثورة ١٩٥٢ على الأدب المصري في الخمسينيات والستينيات؟", a: "انتشار الكتابة الواقعية الاجتماعية — أدب الإنسان البسيط — لكن أيضاً رقابة واضحة في القضايا السياسية — محفوظ أُجبر على تأخير 'أولاد حارتنا'" },
+    ],
+    600: [
+      { q: "ما الفرق النقدي بين الرومانسية والكلاسيكية والواقعية في الأدب العربي الحديث؟", a: "الكلاسيكية: محاكاة التراث العربي القديم (شوقي) — الرومانسية: التعبير عن الذات والطبيعة والخيال (جبران — أبو شبكة) — الواقعية: تصوير المجتمع بموضوعية (محفوظ — يوسف إدريس)" },
+      { q: "كيف عالج الأدب العربي الحديث قضية الهوية بين التراث والحداثة؟", a: "طه حسين: الحداثة الأوروبية مرجع — الحكيم: التوفيق المستحيل — محفوظ: الهوية في الجذور الشعبية — أدونيس: القطيعة الجذرية مع التراث — ولا يزال الجدل مستمراً" },
+      { q: "ما أثر شعر المقاومة الفلسطيني على مفهوم الشعر العربي الملتزم؟", a: "وسّع وظيفة الشعر من الجمال للشهادة والهوية — درويش وسميح القاسم ومحمود درويش حوّلوا الشعر أداة بقاء ثقافي — أثّروا في الشعراء العرب تجاه الانتماء والمسؤولية" },
+    ],
+  },
+
+  "🌐 سياسة وعلاقات دولية": {
+    200: [
+      { q: "كم عدد الدول الدائمة العضوية في مجلس الأمن؟", a: "خمس دول: أمريكا — روسيا — الصين — بريطانيا — فرنسا" },
+      { q: "ما مقر الأمم المتحدة؟", a: "نيويورك" },
+      { q: "ما الفرق بين الديمقراطية المباشرة والتمثيلية؟", a: "المباشرة: الشعب يُصوّت على كل قرار — التمثيلية: يُنتخب ممثلون يُقررون نيابةً عنه" },
+      { q: "ما معنى اختصار NATO؟", a: "North Atlantic Treaty Organization — حلف شمال الأطلسي" },
+      { q: "ما أكبر اقتصاد في العالم من حيث الناتج المحلي الإجمالي؟", a: "الولايات المتحدة الأمريكية" },
+      { q: "في أي عام تأسّست الأمم المتحدة؟", a: "١٩٤٥م" },
+      { q: "ما الفرق بين الدبلوماسية والسياسة الخارجية؟", a: "السياسة الخارجية: الأهداف والقرارات — الدبلوماسية: الأداة والأسلوب لتحقيقها" },
+      { q: "ما اسم الاتفاقية الدولية لحظر الأسلحة الكيميائية؟", a: "اتفاقية الأسلحة الكيميائية (CWC) — ١٩٩٣م" },
+    ],
+    400: [
+      { q: "ما الفرق بين الواقعية والليبرالية كنظريتين في العلاقات الدولية؟", a: "الواقعية: الدول تسعى للقوة في فوضى دولية — لا ثقة — المصلحة الوطنية أولاً. الليبرالية: التعاون ممكن — المؤسسات والقانون الدولي تُقيّد الصراع" },
+      { q: "ما مفهوم 'توازن القوى' وكيف طُبّق في أوروبا بعد نابليون؟", a: "تعادل القوى بين الدول لمنع هيمنة واحدة — طُبّق في مؤتمر فيينا ١٨١٥ بتوازن بين القوى الكبرى الخمس (نظام الكونسيرت الأوروبي)" },
+      { q: "ما أثر تغيّر المناخ على مفهوم الأمن القومي وفق التقارير الاستخباراتية الغربية؟", a: "يُسبّب نزاعات على الموارد (ماء — غذاء) — يُهجّر شعوباً ويُعزّز التطرف — يهدد القواعد العسكرية الساحلية — أصبح 'مُضاعف التهديد' في تقديرات الأمن" },
+      { q: "ما المقصود بـ 'Soft Power' لجوزيف ناي وكيف تختلف عن القوة الصلبة؟", a: "القوة الصلبة: الجيش والاقتصاد والإكراه — الناعمة: الجاذبية الثقافية والقيمية والسياسية — أمريكا قوية ناعمة عبر هوليوود والجامعات والديمقراطية" },
+    ],
+    600: [
+      { q: "ما التحديات التي تواجه نظام الدولة-الأمة في عصر العولمة؟", a: "الشركات العابرة للحدود تتجاوز الضرائب — الفضاء الإلكتروني لا يعرف حدوداً — الأوبئة والمناخ تحتاج حوكمة عالمية — الهويات المتعددة تُنافس الهوية القومية — الدولة تفقد احتكار السلطة التدريجي" },
+      { q: "كيف يُعيد صعود الصين تشكيل النظام الدولي الذي أسّسته أمريكا بعد الحرب الباردة؟", a: "الصين تتحدى المؤسسات الغربية (IMF — WTO) ببدائل كـBRICS وبنك آسيا للبنية التحتية — تطرح نموذجاً غير ليبرالي — تُقلّص نفوذ أمريكا في أفريقيا وآسيا — بدء نظام ثنائي القطب جديد" },
+      { q: "ما الجدل الأكاديمي حول 'فخ ثيوسيديدس' وهل الحرب بين أمريكا والصين حتمية؟", a: "الفخ: القوة الصاعدة تصطدم بالقوة القائمة — جراهام أليسون يرى ١٢ من ١٦ حالة انتهت بحرب. النقد: النووية تمنع الحرب المباشرة — الترابط الاقتصادي حائل — المنطق الحتمي يُهمل الإرادة السياسية" },
+    ],
+  },
+
+  "🍽️ مطبخ عالمي": {
+    200: [
+      { q: "ما بلد المنشأ للسوشي؟", a: "اليابان" },
+      { q: "ما المكوّن الأساسي في الكيمشي الكوري؟", a: "الملفوف الصيني (البيكنج كابدج) مع التوابل والتخمير" },
+      { q: "ما الفرق بين الباستا الطازجة والجافة؟", a: "الطازجة: بيض ودقيق — تُطهى بسرعة — الجافة: ماء ودقيق سميد — تُخزَّن طويلاً" },
+      { q: "ما أصل طبق المسخن الفلسطيني؟", a: "طبق شعبي فلسطيني من الدجاج مع البصل والسماق وزيت الزيتون على خبز الطابون" },
+      { q: "ما الفرق بين الكاري الهندي والتايلاندي؟", a: "الهندي: توابل جافة وطماطم ولبن — التايلاندي: معجون طازج مع جوز الهند وعشب ليمون" },
+      { q: "ما اسم طبق المكسيك الشهير المصنوع من عجينة الذرة؟", a: "التورتيلا — أو التاكو" },
+      { q: "ما أصل الشوكولاتة؟", a: "حضارة الأزتيك والمايا في أمريكا الوسطى — نقلها الإسبان لأوروبا" },
+      { q: "من أين جاءت ثقافة شرب القهوة؟", a: "اليمن وإثيوبيا — انتشرت عبر المقاهي العثمانية لأوروبا" },
+    ],
+    400: [
+      { q: "ما تقنية السوفليه (Soufflé) وما سبب صعوبتها؟", a: "يعتمد على بياض البيض المخفوق للانتفاخ بالفرن — ينكمش عند فتح الفرن أو الاهتزاز — يحتاج توقيتاً دقيقاً وحرارة مثالية" },
+      { q: "ما الفرق الكيميائي بين الخبز بالخميرة والخبز بصودا الخبز؟", a: "الخميرة: كائن حي يُخمّر السكر ويُنتج CO2 ببطء — صودا الخبز: تفاعل كيميائي فوري (قلوي + حمض) — الخميرة تُعطي نكهة أعمق" },
+      { q: "ما مبدأ تقنية 'Umami' الخامسة في الطعم البشري؟", a: "الأومامي: طعم اللحمية والعمق — يُسببه حمض الغلوتاميك في اللحم والجبن المعتّق والفطر والصلصة اليابانية — أُضيف للأطعمة الأساسية الأربعة عام ١٩٨٥" },
+      { q: "كيف تختلف مدارس الطهي الفرنسية الكلاسيكية عن طهي الـ Nouvelle Cuisine؟", a: "الكلاسيكية (إسكوفييه): صلصات ثقيلة — وقت طويل — تزيين معقد. Nouvelle Cuisine: خفّة — موسمية — تقديم تشكيلي — تقليل الدهون — التركيز على الطعم الأصلي للمكوّن" },
+    ],
+    600: [
+      { q: "كيف ترتبط جغرافيا التوابل بمسار التاريخ الاستعماري؟", a: "الرغبة في الفلفل والقرفة والقرنفل دفعت البرتغال وإسبانيا لاستكشاف طرق بحرية — احتكار التوابل موّل الاستعمار — البحث عن الهند سبّب اكتشاف أمريكا" },
+      { q: "ما علم 'الغاسترونومي الجزيئية' (Molecular Gastronomy) وأبرز رواده؟", a: "تطبيق الكيمياء والفيزياء على الطهي — فيران أدريا وهيستون بلومنتال — كرة أفيوكار من السائل — رغوة البيرة — جيل — مأكولات تتحول إلى أشكال وحالات غير متوقعة" },
+      { q: "كيف شكّلت الهجرات البشرية المطابخ الوطنية المعروفة اليوم؟", a: "الطماطم والفلفل أمريكية ومحورية في إيطاليا والمغرب — البطاطس أيرلندية بفضل أمريكا — المطبخ الكاريبي خليط أفريقي-أمريكي-أوروبي — المطبخ الأمريكي كله نتاج هجرات" },
+    ],
+  },
+
+  "🔬 فيزياء وكيمياء": {
+    200: [
+      { q: "ما عدد عناصر الجدول الدوري حتى الآن؟", a: "١١٨ عنصراً" },
+      { q: "ما الصيغة الكيميائية للماء؟", a: "H₂O" },
+      { q: "ما قانون نيوتن الأول للحركة؟", a: "الجسم الساكن يبقى ساكناً والجسم المتحرك يبقى متحركاً ما لم تؤثر عليه قوة خارجية" },
+      { q: "ما اسم أصغر جسيم في الذرة يُعرف حتى الآن؟", a: "الكوارك" },
+      { q: "ما الفرق بين التفاعل الكيميائي الطارد للحرارة وماصّها؟", a: "الطارد: يُصدر حرارة (الاحتراق) — الماص: يمتصها (الطهي)" },
+      { q: "ما سرعة الصوت في الهواء؟", a: "حوالي ٣٤٣ م/ث عند درجة حرارة ٢٠ درجة مئوية" },
+      { q: "ما الفرق بين الفيزياء الكلاسيكية والكمية؟", a: "الكلاسيكية تصف عالم الأجسام الكبيرة — الكمية تصف عالم الجسيمات الأصغر من الذرة وتختلف فيه قوانين الحركة" },
+      { q: "ما اسم العالم الذي اكتشف النسبية الخاصة والعامة؟", a: "ألبرت أينشتاين" },
+    ],
+    400: [
+      { q: "ما الفرق بين الاندماج النووي والانشطار وأيهما يُنتج طاقة أكبر؟", a: "الانشطار: تكسير نواة ثقيلة — الاندماج: دمج نوى خفيفة. الاندماج يُنتج طاقة أكبر بكثير ولا يُخلّف نفايات مشعة طويلة — لكن تحقيقه تجارياً لم ينجح بعد" },
+      { q: "ما مبدأ الانتروبيا في الديناميكا الحرارية وما دلالته الفلسفية؟", a: "الانتروبيا: مقياس الفوضى في النظام — تتزايد دائماً في الكون المغلق — دلالتها: الكون يتجه نحو الفوضى التدريجية (الموت الحراري) — الوجود المنظم استثناء مؤقت" },
+      { q: "ما مفارقة شرودنغر القطة وما تُبيّنه عن تفسير ميكانيكا الكم؟", a: "القطة في الصندوق ميتة وحية في آنٍ حتى يُفتح الصندوق — تُجسّد تعارض التراكب الكمومي مع الواقع اليومي — تُظهر الجدل بين تفسيرات: كوبنهاغن — عوالم متعددة — انهيار الموجة" },
+      { q: "ما النظرية التي تجمع القوى الأربعة الأساسية وما المشكلة في توحيدها؟", a: "لا توجد نظرية كاملة بعد — النموذج القياسي يوحّد ثلاثة (كهرومغناطيسية — نووية قوية — ضعيفة) لكن لا يشمل الجاذبية — توحيد الجاذبية مع الكم هو السؤال الأكبر في الفيزياء" },
+    ],
+    600: [
+      { q: "كيف تُتيح نظرية الأوتار (String Theory) حلاً لتوحيد الجاذبية مع الكم؟", a: "تفترض أن الجسيمات الأساسية ليست نقاطاً بل أوتاراً مُهتزّة في ١٠–١١ بُعداً — الجاذبية ناتجة عن وتر خاص (الغرافيتون) — الأبعاد الإضافية مطوية. نقدها: لا دليل تجريبي حتى الآن" },
+      { q: "ما المقصود بـ 'المادة المظلمة' و'الطاقة المظلمة' وما نسبتهما من الكون؟", a: "المادة المظلمة ٢٧٪: كتلة غير مرئية تُفسّر تسارع المجرات — الطاقة المظلمة ٦٨٪: قوة تُسرّع توسع الكون — المرئي فقط ٥٪ — طبيعتهما مجهولة تماماً" },
+      { q: "كيف تغيّر مفهوم 'الحتمية العلمية' بعد ميكانيكا الكم وما أثر ذلك على الفلسفة؟", a: "نيوتن: كل شيء يُحدَّد بقوانين ثابتة — الكم: العشوائية الكمية حقيقية لا جهلاً — أينشتاين رفضها ('لا يُقامر الله') — أثّرت على الحرية والإرادة: ألغت الحتمية الصارمة لكن لم تُثبت الحرية" },
+    ],
+  },
+
+  "🌿 بيئة وتغيّر مناخ": {
+    200: [
+      { q: "ما الغاز الأكثر مسؤوليةً عن الاحترار العالمي؟", a: "ثاني أكسيد الكربون (CO₂)" },
+      { q: "في أي عام وُقِّع اتفاق باريس للمناخ؟", a: "٢٠١٥م" },
+      { q: "ما اسم الظاهرة التي تُسبّب ارتفاع درجات الحرارة عالمياً؟", a: "الاحترار العالمي — أو ظاهرة الاحتباس الحراري" },
+      { q: "كم ارتفعت درجة حرارة الأرض منذ عصر ما قبل الصناعة؟", a: "حوالي ١.١–١.٢ درجة مئوية" },
+      { q: "ما الطاقة المتجددة الأسرع نمواً عالمياً؟", a: "الطاقة الشمسية" },
+      { q: "ما الدولة الأكثر تلوثاً للكربون في العالم حالياً؟", a: "الصين (إجمالياً) — أمريكا الأعلى تاريخياً وللفرد" },
+      { q: "ما المقصود بـ 'Carbon Footprint'؟", a: "إجمالي انبعاثات الكربون التي يُسبّبها فرد أو منظمة أو نشاط بشكل مباشر وغير مباشر" },
+    ],
+    400: [
+      { q: "ما الفرق بين التكيف مع المناخ والتخفيف من حدته؟", a: "التخفيف: تقليل الانبعاثات (مصدر المشكلة) — التكيف: بناء قدرة التعامل مع التغييرات القائمة (سدود — زراعة مقاومة للجفاف)" },
+      { q: "ما الخطر الأكبر من ذوبان الجليد في القطبين؟", a: "ارتفاع مستوى البحر يُهدد المدن الساحلية — إطلاق الميثان المخزّن في الجليد الدائم يُضاعف الاحترار (حلقة ردود فعل إيجابية)" },
+      { q: "ما المقصود بـ'العدالة المناخية' وما مطالبها الرئيسية؟", a: "الدول الفقيرة الأقل مسؤوليةً هي الأكثر تضرراً — تطالب بتعويضات من الدول الصناعية — نقل التكنولوجيا النظيفة — تمثيل أفضل في مفاوضات المناخ" },
+      { q: "ما تحديات طاقة الهيدروجين كوقود المستقبل؟", a: "الهيدروجين النظيف يُنتَج من الكهرباء المتجددة (تحليل الماء) — لكن تخزينه وتوزيعه مكلف ومعقد — درجة اشتعاله خطرة — الكفاءة لا تزال أقل من البطاريات في السيارات" },
+    ],
+    600: [
+      { q: "كيف تُغيّر حلقات التغذية الراجعة (feedback loops) التوقعات المناخية الأسوأ؟", a: "ذوبان جليد القطب يُقلّل انعكاس الشمس (albedo) فيزيد الاحترار — الغابات المحترقة تُطلق CO2 — ذوبان التندرا يُطلق الميثان — هذه الحلقات تُفاقم الاحترار تلقائياً بعد عتبة معينة" },
+      { q: "ما الجدل الأكاديمي حول فاعلية 'هندسة المناخ' (Geoengineering) كحل؟", a: "حقن الجسيمات في الستراتوسفير لتعكس الشمس ممكن تقنياً لكن: يُعالج الأعراض لا الأسباب — قد يُخلّ بأنماط الأمطار — إذا توقف فجأة سيُسبّب صدمة حرارية — يُقلّل الضغط على خفض الانبعاثات" },
+      { q: "كيف يرتبط تغيّر المناخ بالهشاشة السياسية والنزاعات المسلحة؟", a: "الجفاف والنزاع على المياه مُحرّك صراعات (دارفور — سوريا جزئياً) — الهجرة المناخية تُضعزع الاستقرار — شُح الغذاء يُغذّي التطرف — تقارير الأمن القومي الأمريكي تُصنّفه مُضاعف تهديد" },
+    ],
+  },
+
+  "💰 اقتصاد وأعمال": {
+    200: [
+      { q: "ما الفرق بين التضخم والانكماش؟", a: "التضخم: ارتفاع الأسعار — الانكماش: انخفاضها" },
+      { q: "ما معنى GDP؟", a: "Gross Domestic Product — الناتج المحلي الإجمالي" },
+      { q: "ما الفرق بين الأسهم والسندات؟", a: "الأسهم: ملكية في شركة — السندات: ديون تُعطي فائدة ثابتة" },
+      { q: "ما اسم أكبر بورصة أوراق مالية في العالم؟", a: "بورصة نيويورك (NYSE)" },
+      { q: "من هو صاحب نظرية 'اليد الخفية' في الاقتصاد؟", a: "آدم سميث" },
+      { q: "ما الفرق بين الاقتصاد الجزئي والكلي؟", a: "الجزئي: يدرس الأفراد والشركات — الكلي: يدرس الاقتصاد الوطني كالتضخم والبطالة" },
+      { q: "ما الغرض الأساسي من البنك المركزي؟", a: "الإشراف على السياسة النقدية — ضبط التضخم — الإشراف على البنوك" },
+    ],
+    400: [
+      { q: "ما الفرق بين السياسة النقدية التوسعية والتقييدية؟", a: "التوسعية: تخفيض أسعار الفائدة وزيادة الكتلة النقدية لتحفيز الاقتصاد — التقييدية: رفع الفائدة لتقليل التضخم" },
+      { q: "ما مشكلة الـ'Moral Hazard' في الاقتصاد وكيف تُسبّب أزمات مالية؟", a: "عندما يعلم أحد أنه لن يتحمل العواقب يتصرف بتهور — البنوك 'الكبيرة جداً للفشل' تأخذ مخاطر عالية لأنها تعلم أن الدولة ستُنقذها" },
+      { q: "ما نظرية 'التدمير الخلاق' لشومبيتر وكيف تُفسّر الابتكار الرأسمالي؟", a: "الابتكار يُدمّر الصناعات القديمة ليُنشئ جديدة — السيارة دمرت العربات — الإنترنت دمر الصحافة المطبوعة — الرأسمالية تتجدد عبر هذا الدمار المستمر" },
+      { q: "ما أسباب الأزمة المالية العالمية ٢٠٠٨ وما الدروس المستخلصة؟", a: "قروض عقارية عالية المخاطر (Subprime) — تعبئتها في منتجات مالية معقدة — غياب الرقابة — عندما انهارت أسعار العقارات انهار النظام. الدروس: تنظيم أقوى — اختبارات الضغط البنكية" },
+    ],
+    600: [
+      { q: "كيف تُفسّر نظرية الألعاب سلوك الدول في المفاوضات الدولية؟", a: "كل لاعب يعظّم منفعته مع مراعاة قرارات الآخر — معضلة السجين تُبيّن كيف تقود العقلانية الفردية لنتائج سيئة جماعياً — تُفسّر سباقات التسلح والاتفاقيات البيئية" },
+      { q: "ما الفرق بين مدارس الاقتصاد الكينزية والنيوكلاسيكية في معالجة الركود؟", a: "الكينزية: الدولة تُحفّز الطلب بالإنفاق في الركود — النيوكلاسيكية: الأسواق تُصحّح نفسها — الإنفاق يزيد الديون — الركود طبيعي وضروري للتطهير الاقتصادي" },
+      { q: "ما تحديات 'رأسمالية الرقابة' (Surveillance Capitalism) التي وصفتها شوشانا زوبوف؟", a: "الشركات التقنية تجمع سلوك المستخدمين كمادة خام — تُحوّله لتنبؤات تُباع للمعلنين — الإنسان سلعة — الملكية الجديدة هي ملكية البيانات السلوكية — تُهدد الإرادة الحرة والديمقراطية" },
+    ],
+  },
+
+  "🎨 فنون وعمارة": {
+    200: [
+      { q: "من رسم الموناليزا؟", a: "ليوناردو دا فينشي" },
+      { q: "ما اسم أشهر لوحات فان غوخ؟", a: "ليلة النجوم (The Starry Night)" },
+      { q: "في أي مدينة يقع متحف اللوفر؟", a: "باريس" },
+      { q: "ما اسم أشهر معمار في الهند؟", a: "تاج محل في آغرا" },
+      { q: "من هو مهندس الكولوسيوم في روما؟", a: "بني في عهد فيسباسيان وتيتوس — لا يُعرف اسم المهندس تحديداً" },
+      { q: "ما اسم الحركة الفنية التي ابتدعها بيكاسو وبراك؟", a: "التكعيبية (Cubism)" },
+      { q: "ما اسم أشهر لوحة لسالفادور دالي؟", a: "استمرار الذاكرة (الساعات الذائبة)" },
+      { q: "ما الفرق بين الرسم الزيتي والمائي؟", a: "الزيتي: بطيء الجفاف يسمح بالتعديل — المائي: سريع يتطلب دقة أكبر وشفافية في الطبقات" },
+    ],
+    400: [
+      { q: "ما المقصود بـ'العمارة الباروكية' وأبرز سماتها؟", a: "حركة فنية معمارية (القرن السابع عشر) — تمييزها: الزخرفة الضخمة — الحركة الدرامية — النور والظل — الأقواس المعقدة — كنيسة سان بيترو نموذجها الأشهر" },
+      { q: "ما الفرق بين الانطباعية وما بعد الانطباعية في الرسم؟", a: "الانطباعية: التقاط لحظة الضوء والحركة (مونيه) — ما بعدها: إضافة التعبير الشخصي والشكل الهندسي (سيزان) وما الشخصية (فان غوخ)" },
+      { q: "ما أهمية حركة 'باوهاوس' في تاريخ التصميم الحديث؟", a: "مدرسة ألمانية (١٩١٩–١٩٣٣) وحّدت الفن والحرفة والتصميم — أسّست لمبدأ 'الشكل يتبع الوظيفة' — أثّرت على التصميم الجرافيكي والمعماري والصناعي حتى اليوم" },
+      { q: "كيف انعكس مفهوم 'الفن للفن' على تطور الحداثة الفنية؟", a: "أزاح الفن من وظيفته الدينية والسياسية — جعله غايةً لذاته — فتح الباب للتجريد الكامل (موندريان — مالييفتش) — ثم التشكيكية (Duchamp): 'كل شيء يمكن أن يكون فناً'" },
+    ],
+    600: [
+      { q: "كيف يُفسّر والتر بنيامين في 'العمل الفني في عصر التناسخ الميكانيكي' أثر الاستنساخ على الأصالة؟", a: "الأصل له 'هالة' (Aura) تنبع من حضوره الفريد في الزمان والمكان — الاستنساخ يُدمّر الهالة — ديمقراطية الفن لكن بخسارة العمق الطقسي — فتح باب الفن السياسي الجماهيري" },
+      { q: "ما العلاقة بين العمارة والسلطة السياسية عبر التاريخ؟", a: "الأهرامات: تأليه الفرعون — كنيسة سان بيترو: قوة الكنيسة — فرساي: مركزية الملكية — النازية والستالينية استخدمتا العمارة الضخمة للترهيب — معمار دولة واجهتها الأيديولوجية" },
+      { q: "كيف تتحدى حركة 'الفن المفاهيمي' التعريفات التقليدية للفن؟", a: "الفكرة هي العمل لا المادة — دوشان: مبولة في متحف = فن. يوكو أونو: تعليمات فحسب. الفن لا يحتاج مهارة يدوية — تحدّى السوق الفنية والمؤسسات — سؤال: ما الفن؟ لا إجابة نهائية" },
+    ],
+  },
+
+  "🏥 صحة وطب": {
+    200: [
+      { q: "ما الفرق بين الفيروس والبكتيريا؟", a: "الفيروس: غير حي — يتكاثر داخل خلايا حية — لا يستجيب للمضادات الحيوية. البكتيريا: كائن حي وحيد الخلية — يستجيب للمضادات الحيوية" },
+      { q: "ما وظيفة الإنسولين في الجسم؟", a: "يُساعد الخلايا على امتصاص الجلوكوز (السكر) من الدم لإنتاج الطاقة" },
+      { q: "ما الفرق بين السكري النوع الأول والثاني؟", a: "الأول: المناعة تُهاجم خلايا البنكرياس — لا إنسولين (جيني). الثاني: الخلايا تقاوم الإنسولين — مرتبط بنمط الحياة" },
+      { q: "ما أعراض نقص فيتامين D؟", a: "ضعف العظام — تعب — ضعف المناعة — اكتئاب — آلام العضلات" },
+      { q: "ما الفرق بين اللقاح والعلاج؟", a: "اللقاح وقاية قبل الإصابة — العلاج يُعطى بعدها" },
+      { q: "ما أشهر أنواع السرطان عالمياً؟", a: "سرطان الرئة — الثدي — القولون — البروستاتا" },
+    ],
+    400: [
+      { q: "كيف تعمل المضادات الحيوية وما خطر مقاومة البكتيريا لها؟", a: "تُدمّر جدار الخلية البكتيرية أو تُعطّل تكاثرها — المقاومة تنشأ بالطفرات عند الاستخدام الزائد — تهدد بعودة أمراض كانت قابلة للعلاج" },
+      { q: "ما الفرق بين الصحة النفسية والعقلية في الأدبيات الطبية الحديثة؟", a: "الصحة النفسية (Mental Health): الأوسع — يشمل العاطفي والاجتماعي والسلوكي. الصحة العقلية: تُشير أحياناً للاضطرابات الدماغية بالمعنى الأضيق — كثيراً ما يُستخدمان مترادفين" },
+      { q: "ما تقنية CRISPR في العلاج الجيني وما تطبيقاتها المحتملة؟", a: "مقص جيني دقيق يُعدّل DNA في خلايا حية — يمكنه تصحيح الجينات المعيبة — تطبيقات: الأنيميا المنجلية — السرطان — الأمراض الوراثية — لكن يثير مخاوف أخلاقية" },
+      { q: "كيف يؤثر الاكتئاب بيولوجياً على الدماغ وليس فقط نفسياً؟", a: "تراجع نشاط الفص الجبهي — اختلال توازن الناقلات العصبية (سيروتونين — دوبامين) — يُقلّص حجم الحُصين (hippocampus) — الالتهابات العصبية — يُثبت أنه مرض عضوي لا ضعف إرادة" },
+    ],
+    600: [
+      { q: "ما التحولات في فهم الصحة النفسية من الاضطرابات كـ'وصمة' إلى 'أمراض'؟", a: "تاريخياً: الجنون = شيطان — القرن ١٩: المصحات — النصف الثاني من القرن ٢٠: الدليل التشخيصي DSM أضفى الطابع الطبي — حركة رفع الوصمة تُطالب بالمساواة مع الأمراض الجسدية في التأمين والمعاملة" },
+      { q: "ما أثر جائحة COVID-19 على آليات الاستجابة الصحية العالمية وما الدروس؟", a: "كشفت ضعف منظمة الصحة العالمية — التأخر في الإشعار — تفاوت الوصول للقاحات — صعود الوطنية الصحية. الدروس: تمويل WHO — شفافية الإشعار — توزيع عادل للقاحات — بنية تحتية صحية مقاومة للأزمات" },
+      { q: "ما الفرق الأخلاقي والعلمي بين الإطالة الصناعية للحياة (Life Extension) وتحسين جودتها (Healthspan)?", a: "إطالة العمر دون صحة قد تزيد المعاناة — تحسين healthspan: حياة أطول ونوعية أعلى. أخلاقياً: من يستفيد؟ تفاوت الوصول — هل الخلود مرغوب؟ قد يُعيق التجديد الجيلي الاجتماعي" },
+    ],
+  },
+
+  "🎮 ألعاب إلكترونية وثقافة شعبية": {
+    200: [
+      { q: "من طوّر لعبة Minecraft؟", a: "نوتش (ماركوس بيرسون) — اشترتها Microsoft لاحقاً" },
+      { q: "ما الشركة صانعة سلسلة ألعاب Mario؟", a: "Nintendo" },
+      { q: "ما اسم المنافس الرئيسي لـ PlayStation في سوق وحدات الألعاب؟", a: "Xbox (Microsoft)" },
+      { q: "ما أكثر لعبة فيديو مبيعاً في التاريخ؟", a: "Minecraft — أو Tetris (حسب طريقة الحساب)" },
+      { q: "ما المقصود بـ 'Esports'؟", a: "المنافسات الاحترافية في ألعاب الفيديو" },
+      { q: "ما اسم الكون المروّج له Marvel في أفلامه؟", a: "Marvel Cinematic Universe (MCU)" },
+      { q: "من كتب سلسلة Game of Thrones؟", a: "جورج ر.ر. مارتن" },
+    ],
+    400: [
+      { q: "كيف غيّر الـ 'Free-to-Play' نموذج صناعة الألعاب؟", a: "ألعاب مجانية تكسب من عمليات الشراء داخل اللعبة (Microtransactions) — Fortnite وPUBG نموذج — وسّع جمهور اللعب لكن اتُّهم بالاستغلال خاصة للأطفال" },
+      { q: "ما الفرق بين الـ 'Open World' وألعاب 'Linear' في تجربة اللاعب؟", a: "Open World: حرية استكشاف كاملة (GTA — Zelda) — Linear: مسار سردي محدد (God of War القديم) — الأولى أوسع لكن قد تُشتّت — الثانية أكثر تركيزاً درامياً" },
+      { q: "كيف تُستخدم الألعاب الإلكترونية في الأبحاث النفسية والتعليمية؟", a: "دراسة السلوك في بيئة محكومة — التعلم بالتجربة — تحسين الإدراك المكاني والتركيز — بعض ألعاب المحاكاة تُدرّب الجراحين والطيارين — Duolingo كنموذج للتعلم بالمكافأة" },
+    ],
+    600: [
+      { q: "ما النقاشات الأكاديمية حول 'التعنيف في الألعاب' وهل تزيد العنف في الواقع؟", a: "دراسات متضاربة — APA ربطتها بعدوان قصير الأمد — لكن معدلات الجريمة تراجعت مع انتشار الألعاب — الإجماع الأكاديمي: الدليل ضعيف — العوامل الاجتماعية أقوى تأثيراً من الألعاب" },
+      { q: "كيف شكّل 'Metaverse' كمفهوم عالماً موازياً وما التحديات التقنية والاجتماعية أمامه؟", a: "عالم رقمي دائم مترابط (Ready Player One فكرياً) — تحديات: النطاق الترددي — الواقع الافتراضي المريح — الهوية والملكية الرقمية — احتكار الشركات — التأثير على التواصل البشري الحقيقي" },
+    ],
+  },
+
 };
 
-const CAT_NAMES = Object.keys(CATEGORIES);
-let t1Name = 'الفريق الأول', t2Name = 'الفريق التاني';
+<script>
+// ─── State ──────────────────────────────────────────────────────────────────
+const CAT_NAMES = Object.keys(QUESTION_BANK);
+let sel1 = new Set(), sel2 = new Set();
+let t1Name = '', t2Name = '';
 let t1Score = 0, t2Score = 0;
-let selectedCats = [], boardData = [], currentCell = null;
+let boardData = [];
+let currentIdx = null;
+const CATS_EACH = 6;
+const PTS = [200, 400, 600];
 
-function buildSetup() {
-  const grid = document.getElementById('cat-grid');
-  grid.innerHTML = '';
-  const t1Selects = [], t2Selects = [];
+// ─── SETUP ──────────────────────────────────────────────────────────────────
+function buildChips() {
+  ['chips1','chips2'].forEach((id, ti) => {
+    const wrap = document.getElementById(id);
+    CAT_NAMES.forEach(name => {
+      const ch = document.createElement('div');
+      ch.className = 'chip';
+      ch.textContent = name;
+      ch.dataset.name = name;
+      ch.onclick = () => toggleChip(ch, ti + 1, name);
+      wrap.appendChild(ch);
+    });
+  });
+}
 
-  for (let i = 0; i < 4; i++) {
-    const wrap1 = document.createElement('div');
-    wrap1.className = 'cat-item';
-    wrap1.innerHTML = `<div class="cat-team-label" style="color:var(--team1);font-size:11px;font-weight:700;letter-spacing:1px">الفريق الأول — ${i+1}</div>`;
-    const s1 = document.createElement('select');
-    s1.className = 'cat-select t1';
-    CAT_NAMES.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; s1.appendChild(o); });
-    s1.selectedIndex = i;
-    wrap1.appendChild(s1);
-    grid.appendChild(wrap1);
-    t1Selects.push(s1);
+function toggleChip(el, team, name) {
+  const other = team === 1 ? sel2 : sel1;
+  const mine  = team === 1 ? sel1 : sel2;
+  if (other.has(name)) return; // taken by other team
 
-    const wrap2 = document.createElement('div');
-    wrap2.className = 'cat-item';
-    wrap2.innerHTML = `<div class="cat-team-label" style="color:var(--team2);font-size:11px;font-weight:700;letter-spacing:1px">الفريق التاني — ${i+1}</div>`;
-    const s2 = document.createElement('select');
-    s2.className = 'cat-select t2';
-    CAT_NAMES.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; s2.appendChild(o); });
-    s2.selectedIndex = i + 4;
-    wrap2.appendChild(s2);
-    grid.appendChild(wrap2);
-    t2Selects.push(s2);
+  if (mine.has(name)) {
+    mine.delete(name);
+    el.classList.remove(team === 1 ? 'sel1' : 'sel2');
+    el.classList.remove('disabled');
+  } else {
+    if (mine.size >= CATS_EACH) return;
+    mine.add(name);
+    el.classList.add(team === 1 ? 'sel1' : 'sel2');
   }
+  syncChips();
+  updateStartBtn();
+}
 
-  window._t1Selects = t1Selects;
-  window._t2Selects = t2Selects;
+function syncChips() {
+  document.getElementById('cnt1').textContent = sel1.size;
+  document.getElementById('cnt2').textContent = sel2.size;
+
+  // Update all chips disabled state
+  ['chips1','chips2'].forEach((id, ti) => {
+    const team = ti + 1;
+    const mine  = team === 1 ? sel1 : sel2;
+    const other = team === 1 ? sel2 : sel1;
+    document.getElementById(id).querySelectorAll('.chip').forEach(ch => {
+      const n = ch.dataset.name;
+      ch.classList.remove('disabled');
+      if (other.has(n)) ch.classList.add('disabled');
+      else if (mine.size >= CATS_EACH && !mine.has(n)) ch.classList.add('disabled');
+    });
+  });
+}
+
+function updateStartBtn() {
+  const btn = document.getElementById('start-btn');
+  if (sel1.size === CATS_EACH && sel2.size === CATS_EACH) {
+    btn.disabled = false;
+    btn.textContent = 'ابدأ اللعبة 🚀';
+  } else {
+    btn.disabled = true;
+    btn.textContent = `اختار ${CATS_EACH - sel1.size} كاتيجوري للأول و${CATS_EACH - sel2.size} للتاني`;
+  }
+}
+
+// ─── GAME START ─────────────────────────────────────────────────────────────
+function pickRandom(arr, n) {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
 }
 
 function startGame() {
-  t1Name = document.getElementById('team1-name').value.trim() || 'الفريق الأول';
-  t2Name = document.getElementById('team2-name').value.trim() || 'الفريق التاني';
+  t1Name = document.getElementById('t1name').value.trim() || 'الفريق الأول';
+  t2Name = document.getElementById('t2name').value.trim() || 'الفريق التاني';
+  t1Score = 0; t2Score = 0;
 
-  const cats1 = window._t1Selects.map(s => s.value);
-  const cats2 = window._t2Selects.map(s => s.value);
-  const all = [...cats1, ...cats2];
-  if (new Set(all).size < 8) { alert('اختار ٨ كاتيجوري مختلفة!'); return; }
-
-  selectedCats = [...cats1.map(n => ({ name: n, team: 1 })), ...cats2.map(n => ({ name: n, team: 2 }))];
+  const cats1 = [...sel1];
+  const cats2 = [...sel2];
+  const allCats = [
+    ...cats1.map(n => ({ name: n, team: 1 })),
+    ...cats2.map(n => ({ name: n, team: 2 })),
+  ];
 
   boardData = [];
-  selectedCats.forEach(({ name, team }) => {
-    CATEGORIES[name].forEach(q => {
-      boardData.push({ cat: name, team, pts: q.pts, q: q.q, a: q.a, used: false, winner: 0 });
-    });
-  });
-
-  t1Score = 0; t2Score = 0;
-  document.getElementById('t1-score-name').textContent = t1Name;
-  document.getElementById('t2-score-name').textContent = t2Name;
-  document.getElementById('t1-score-val').textContent = '0';
-  document.getElementById('t2-score-val').textContent = '0';
-  document.getElementById('give-t1').textContent = '✔ ' + t1Name;
-  document.getElementById('give-t2').textContent = '✔ ' + t2Name;
-
-  renderBoard();
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display = 'flex';
-  document.getElementById('game-screen').style.flexDirection = 'column';
-}
-
-function renderBoard() {
-  const board = document.getElementById('board');
-  board.innerHTML = '';
-
-  selectedCats.forEach(({ name, team }) => {
-    const h = document.createElement('div');
-    h.className = `cat-header t${team}`;
-    h.textContent = name;
-    board.appendChild(h);
-  });
-
-  [[0,1],[2,3],[4,5]].forEach(indices => {
-    indices.forEach(qi => {
-      selectedCats.forEach((_, ci) => {
-        const idx = ci * 6 + qi;
-        const item = boardData[idx];
-        const cell = document.createElement('div');
-        cell.className = `cell ${item.used ? 'used' : ''} ${item.winner === 1 ? 't1-won' : item.winner === 2 ? 't2-won' : ''}`;
-        cell.dataset.idx = idx;
-
-        const val = document.createElement('div');
-        val.className = `cell-val cell-val-${item.pts}`;
-        val.textContent = item.used ? (item.winner ? '✓' : '✗') : item.pts;
-        cell.appendChild(val);
-
-        if (item.used && item.winner) {
-          const dot = document.createElement('div');
-          dot.className = 'cell-dot';
-          cell.appendChild(dot);
-        }
-
-        if (!item.used) cell.onclick = () => openModal(idx);
-        board.appendChild(cell);
+  allCats.forEach(({ name, team }) => {
+    PTS.forEach(pts => {
+      const pool = QUESTION_BANK[name][pts];
+      const picked = pickRandom(pool, 2);
+      picked.forEach(q => {
+        boardData.push({ cat: name, team, pts, q: q.q, a: q.a, used: false, winner: 0 });
       });
     });
   });
 
+  document.getElementById('t1disp').textContent = t1Name;
+  document.getElementById('t2disp').textContent = t2Name;
+  document.getElementById('t1val').textContent = '0';
+  document.getElementById('t2val').textContent = '0';
+  document.getElementById('gbt1').textContent = '✔ ' + t1Name;
+  document.getElementById('gbt2').textContent = '✔ ' + t2Name;
+
+  showScreen('game-screen');
+  renderBoard();
+}
+
+// ─── BOARD ───────────────────────────────────────────────────────────────────
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  const numCats = CATS_EACH * 2; // 12
+  board.style.gridTemplateColumns = `repeat(${numCats}, 1fr)`;
+
+  const allCats = [
+    ...[...sel1].map(n => ({ name: n, team: 1 })),
+    ...[...sel2].map(n => ({ name: n, team: 2 })),
+  ];
+
+  // Headers
+  allCats.forEach(({ name, team }) => {
+    const h = document.createElement('div');
+    h.className = `cat-hdr t${team}`;
+    h.textContent = name;
+    board.appendChild(h);
+  });
+
+  // Rows: 3 point levels × 2 questions each = 6 rows
+  // boardData layout: 12 cats × 6 questions (pts: 0,1 = 200, 2,3 = 400, 4,5 = 600)
+  for (let qi = 0; qi < 6; qi++) {
+    allCats.forEach((_, ci) => {
+      const idx = ci * 6 + qi;
+      const item = boardData[idx];
+      const cell = document.createElement('div');
+      const winCls = item.winner === 1 ? 't1w' : item.winner === 2 ? 't2w' : '';
+      cell.className = `cell ${item.used ? 'used' : ''} ${winCls}`;
+
+      const v = document.createElement('div');
+      v.className = `cv cv${item.pts}`;
+      v.textContent = item.used ? (item.winner ? '✓' : '✗') : item.pts;
+      cell.appendChild(v);
+
+      if (item.used && item.winner) {
+        const dot = document.createElement('div');
+        dot.className = 'cell-dot';
+        cell.appendChild(dot);
+      }
+
+      if (!item.used) cell.onclick = () => openModal(idx);
+      board.appendChild(cell);
+    });
+  }
+
   checkGameOver();
 }
 
+// ─── MODAL ───────────────────────────────────────────────────────────────────
 function openModal(idx) {
+  currentIdx = idx;
   const item = boardData[idx];
-  currentCell = idx;
-  document.getElementById('modal-cat').textContent = item.cat;
-  document.getElementById('modal-pts').textContent = item.pts + ' نقطة';
-  document.getElementById('modal-pts').className = `modal-pts p${item.pts}`;
-  document.getElementById('modal-q').textContent = item.q;
-  document.getElementById('modal-ans').textContent = item.a;
-  document.getElementById('modal-ans').classList.remove('revealed');
-  document.getElementById('reveal-btn').style.display = 'block';
-  document.getElementById('score-btns').classList.remove('show');
+  document.getElementById('mcat').textContent = item.cat;
+  document.getElementById('mpts').textContent = item.pts + ' نقطة';
+  document.getElementById('mpts').className = `modal-pts p${item.pts}`;
+  document.getElementById('mq').textContent = item.q;
+  document.getElementById('mans').textContent = item.a;
+  document.getElementById('mans').classList.remove('revealed');
+  document.getElementById('revbtn').style.display = 'block';
+  document.getElementById('giverow').classList.remove('show');
   document.getElementById('modal').classList.add('open');
 }
 
-function revealAnswer() {
-  document.getElementById('modal-ans').classList.add('revealed');
-  document.getElementById('reveal-btn').style.display = 'none';
-  document.getElementById('score-btns').classList.add('show');
+function revealAns() {
+  document.getElementById('mans').classList.add('revealed');
+  document.getElementById('revbtn').style.display = 'none';
+  document.getElementById('giverow').classList.add('show');
 }
 
 function givePoint(team) {
-  const item = boardData[currentCell];
+  const item = boardData[currentIdx];
   item.used = true; item.winner = team;
-  if (team === 1) { t1Score += item.pts; document.getElementById('t1-score-val').textContent = t1Score; }
-  else if (team === 2) { t2Score += item.pts; document.getElementById('t2-score-val').textContent = t2Score; }
-  closeModal(); renderBoard();
+  if (team === 1) { t1Score += item.pts; document.getElementById('t1val').textContent = t1Score; }
+  else if (team === 2) { t2Score += item.pts; document.getElementById('t2val').textContent = t2Score; }
+  closeModal();
+  renderBoard();
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  currentCell = null;
+  currentIdx = null;
 }
 
+// ─── RESULT ──────────────────────────────────────────────────────────────────
 function checkGameOver() {
-  if (boardData.every(b => b.used)) setTimeout(showResult, 400);
+  if (boardData.every(b => b.used)) setTimeout(showResult, 500);
 }
 
 function showResult() {
-  document.getElementById('game-screen').style.display = 'none';
-  document.getElementById('result-screen').style.display = 'flex';
-  document.getElementById('res-t1-name').textContent = t1Name;
-  document.getElementById('res-t2-name').textContent = t2Name;
-  document.getElementById('res-t1-val').textContent = t1Score;
-  document.getElementById('res-t2-val').textContent = t2Score;
-
+  document.getElementById('rn1').textContent = t1Name;
+  document.getElementById('rn2').textContent = t2Name;
+  document.getElementById('rv1').textContent = t1Score;
+  document.getElementById('rv2').textContent = t2Score;
   let winner, emoji;
   if (t1Score > t2Score) { winner = t1Name + ' فاز! 🎉'; emoji = '🏆'; }
   else if (t2Score > t1Score) { winner = t2Name + ' فاز! 🎉'; emoji = '🏆'; }
   else { winner = 'تعادل! 🤝'; emoji = '🤝'; }
-
-  document.getElementById('result-trophy').textContent = emoji;
-  document.getElementById('result-winner').textContent = winner;
+  document.getElementById('rtrophy').textContent = emoji;
+  document.getElementById('rwinner').textContent = winner;
+  showScreen('result-screen');
 }
 
-buildSetup();
+// ─── SCREENS ─────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+buildChips();
 </script>
+
 </body>
 </html>
