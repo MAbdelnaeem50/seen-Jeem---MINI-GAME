@@ -26,16 +26,16 @@ const CAT_NAMES = RAW_CATEGORIES.map(cat => `${ICONS[cat]} ${cat}`);
 
 
 function createActingQuestion(personOrMovie, expectedAnswer, isMovie = false) {
-  return {
-    q: isMovie ? `فلم: ${personOrMovie}` : `شخصية: ${personOrMovie}`,
-    a: expectedAnswer,
-    isActing: true,
-    actingHint: personOrMovie
-  };
+ return {
+  q: isMovie ? `🎭 قم بتمثيل فيلم: "${personOrMovie}" (بحركات وإيماءات بدون كلمات)` : `🎭 قم بتمثيل شخصية: "${personOrMovie}" (بحركات وإيماءات بدون كلمات)`,
+  a: expectedAnswer,
+  isActing: true,
+  actingHint: personOrMovie
+ };
 }
 
 function createWhoAmIQuestion(description, answer) {
-  return { q: `🕵️ من أنا؟ ${description}`, a: answer, isWhoAmI: true };
+ return { q: `🕵️ من أنا؟ ${description}`, a: answer, isWhoAmI: true };
 }
 
 const QUESTION_BANK = {};
