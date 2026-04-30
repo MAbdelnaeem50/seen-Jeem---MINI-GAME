@@ -10,7 +10,7 @@ const RAW_CATEGORIES = [
  "أمثال شعبية", "عواصم وبلدان", "معلومات عامة"
 ];
 
-// ✅ تم تصحيح خطأ السهم `=>` وإخراج كائن الأيقونات خارج الدالة لتحسين الأداء
+// ✅ تم تصحيح كامل أيقونات الفئات
 const ICONS = {
  "تاريخ مصر": "📜",
  "حضارة فرعونية": "🏺",
@@ -50,7 +50,9 @@ const ICONS = {
  "معلومات عامة": "📌"
 };
 
-const CAT_NAMES = RAW_CATEGORIES.map(cat => `${ICONS[cat]} ${cat}`);
+
+const CAT_NAMES = RAW_CATEGORIES.map(cat => `${ICONS[cat] || '📌'} ${cat}`);
+
 
 function createActingQuestion(personOrMovie, expectedAnswer, isMovie = false) {
  return {
