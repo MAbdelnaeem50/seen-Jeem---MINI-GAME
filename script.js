@@ -2602,18 +2602,7 @@ bank["🚀 فضاء واستكشاف "] = {
     ]
   };
 
-  // الآن جميع الفئات الـ 36 ممتلئة بأسئلة حقيقية.
 
-  // إضافة الفئات الافتراضية لأي فئة لم يتم تعريفها
-  for (let catName in bank) {
-    if (!bank[catName].data200.length) {
-      for (let i = 1; i <= 20; i++) {
-        bank[catName].data200.push({ q: `سؤال 200 في ${catName} (${i})`, a: `إجابة ${i}` });
-        bank[catName].data400.push({ q: `سؤال 400 في ${catName} (${i})`, a: `إجابة ${i}` });
-        bank[catName].data600.push({ q: `سؤال 600 في ${catName} (${i})`, a: `إجابة ${i}` });
-      }
-    }
-  }
 }
 fillBank();
 
