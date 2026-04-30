@@ -35,19 +35,19 @@ function createActingQuestion(personOrMovie, expectedAnswer, isMovie = false) {
 }
 
 function createWhoAmIQuestion(description, answer) {
- return { q: `🕵️ من أنا؟ ${description}`, a: answer, isWhoAmI: true };
+  return { q: `🕵️ من أنا؟ ${description}`, a: answer, isWhoAmI: true };
 }
 
 const QUESTION_BANK = {};
 RAW_CATEGORIES.forEach(cat => {
- const fullCatName = CAT_NAMES.find(c => c.includes(cat));
- if (fullCatName) {
-  QUESTION_BANK[fullCatName] = { data200: [], data400: [], data600: [], isActing: cat.includes("تمثيل") };
- }
+  const fullCatName = CAT_NAMES.find(c => c.includes(cat));
+  if (fullCatName) {
+    QUESTION_BANK[fullCatName] = { data200: [], data400: [], data600: [], isActing: cat.includes("تمثيل") };
+  }
 });
 
 function fillBank() {
- const bank = QUESTION_BANK;
+  const bank = QUESTION_BANK;
 
   // 1. 📜 تاريخ مصر (20 سؤال لكل مستوى)
   bank["📜 تاريخ مصر"] = {
@@ -2584,7 +2584,7 @@ fillBank();
 // =============================================
 // ✅ المتغيرات والدوال المصححة
 // =============================================
-const CATS_EACH = 3;
+onst CATS_EACH = 3;
 let sel1 = [], sel2 = [];
 let t1Name = '', t2Name = '';
 let t1Score = 0, t2Score = 0;
@@ -2593,220 +2593,219 @@ let currentCell = null;
 let usedTracker = {};
 
 function getRandomQuestions(catName, pts, count = 2) {
- const cfg = QUESTION_BANK[catName];
- if (!cfg) return [{ q: `سؤال عن ${catName}`, a: `إجابة افتراضية` }];
- let pool = pts === 200 ? cfg.data200 : (pts === 400 ? cfg.data400 : cfg.data600);
- if (!pool || pool.length === 0) return [{ q: `سؤال عن ${catName}`, a: `إجابة افتراضية` }];
- 
- const key = `${catName}_${pts}`;
- if (!usedTracker[key]) usedTracker[key] = [];
- 
- // ✅ تم تصحيح: pool.map((, idx) => idx) إلى pool.map((_, idx) => idx)
- let availableIndices = pool.map((_, idx) => idx).filter(idx => !usedTracker[key].includes(idx));
- if (availableIndices.length < count) {
-  usedTracker[key] = [];
-  availableIndices = pool.map((_, idx) => idx);
- }
- 
- for (let i = availableIndices.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
- }
- 
- const selectedIndices = availableIndices.slice(0, Math.min(count, availableIndices.length));
- usedTracker[key].push(...selectedIndices);
- return selectedIndices.map(idx => pool[idx]);
+  const cfg = QUESTION_BANK[catName];
+  if (!cfg) return [{ q: `سؤال عن ${catName}`, a: `إجابة افتراضية` }];
+  
+  let pool = pts === 200 ? cfg.data200 : (pts === 400 ? cfg.data400 : cfg.data600);
+  if (!pool || pool.length === 0) return [{ q: `سؤال عن ${catName}`, a: `إجابة افتراضية` }];
+  
+  const key = `${catName}_${pts}`;
+  if (!usedTracker[key]) usedTracker[key] = [];
+  
+  // ✅ تم إصلاح خطأ الدالة: pool.map((_, idx) => idx)
+  let availableIndices = pool.map((_, idx) => idx).filter(idx => !usedTracker[key].includes(idx));
+  
+  if (availableIndices.length < count) {
+    usedTracker[key] = [];
+    availableIndices = pool.map((_, idx) => idx);
+  }
+  
+  for (let i = availableIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+  }
+  
+  const selectedIndices = availableIndices.slice(0, Math.min(count, availableIndices.length));
+  usedTracker[key].push(...selectedIndices);
+  return selectedIndices.map(idx => pool[idx]);
 }
 
 function buildChips() {
- ['chips1', 'chips2'].forEach((id, ti) => {
-  const wrap = document.getElementById(id);
-  if (!wrap) return;
-  wrap.innerHTML = '';
-  CAT_NAMES.forEach(name => {
-   const ch = document.createElement('div');
-   ch.className = 'chip';
-   ch.textContent = name;
-   ch.dataset.name = name;
-   ch.onclick = () => toggleChip(ch, ti + 1, name);
-   wrap.appendChild(ch);
+  ['chips1', 'chips2'].forEach((id, ti) => {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    CAT_NAMES.forEach(name => {
+      const ch = document.createElement('div');
+      ch.className = 'chip';
+      ch.textContent = name;
+      ch.dataset.name = name;
+      ch.onclick = () => toggleChip(ch, ti + 1, name);
+      wrap.appendChild(ch);
+    });
   });
- });
- syncChips();
+  syncChips();
 }
 
 function toggleChip(el, team, name) {
- const mine = team === 1 ? sel1 : sel2;
- const other = team === 1 ? sel2 : sel1;
- if (other.includes(name)) return;
- const idx = mine.indexOf(name);
- if (idx !== -1) mine.splice(idx, 1);
- else {
-  if (mine.length >= CATS_EACH) return;
-  mine.push(name);
- }
- syncChips();
- updateStartBtn();
+  const mine = team === 1 ? sel1 : sel2;
+  const other = team === 1 ? sel2 : sel1;
+  if (other.includes(name)) return;
+  const idx = mine.indexOf(name);
+  if (idx !== -1) mine.splice(idx, 1);
+  else {
+    if (mine.length >= CATS_EACH) return;
+    mine.push(name);
+  }
+  syncChips();
+  updateStartBtn();
 }
 
 function syncChips() {
- document.getElementById('cnt1').innerText = sel1.length;
- document.getElementById('cnt2').innerText = sel2.length;
- ['chips1', 'chips2'].forEach((id, ti) => {
-  const team = ti + 1;
-  const mine = team === 1 ? sel1 : sel2;
-  const other = team === 1 ? sel2 : sel1;
-  const container = document.getElementById(id);
-  if(!container) return;
-  container.querySelectorAll('.chip').forEach(ch => {
-   const n = ch.dataset.name;
-   ch.classList.remove('sel1', 'sel2', 'disabled');
-   if (mine.includes(n)) ch.classList.add(team === 1 ? 'sel1' : 'sel2');
-   else if (other.includes(n)) ch.classList.add('disabled');
-   else if (mine.length >= CATS_EACH) ch.classList.add('disabled');
+  document.getElementById('cnt1').innerText = sel1.length;
+  document.getElementById('cnt2').innerText = sel2.length;
+  ['chips1', 'chips2'].forEach((id, ti) => {
+    const team = ti + 1;
+    const mine = team === 1 ? sel1 : sel2;
+    const other = team === 1 ? sel2 : sel1;
+    const container = document.getElementById(id);
+    if(!container) return;
+    container.querySelectorAll('.chip').forEach(ch => {
+      const n = ch.dataset.name;
+      ch.classList.remove('sel1', 'sel2', 'disabled');
+      if (mine.includes(n)) ch.classList.add(team === 1 ? 'sel1' : 'sel2');
+      else if (other.includes(n)) ch.classList.add('disabled');
+      else if (mine.length >= CATS_EACH) ch.classList.add('disabled');
+    });
   });
- });
 }
 
 function updateStartBtn() {
- const btn = document.getElementById('start-btn');
- if (!btn) return;
- const r1 = CATS_EACH - sel1.length, r2 = CATS_EACH - sel2.length;
- if (sel1.length === CATS_EACH && sel2.length === CATS_EACH) {
-  btn.disabled = false;
-  btn.textContent = '🚀 ابدأ اللعبة الآن!';
- } else {
-  btn.disabled = true;
-  btn.textContent = `الفريق الأول يحتاج ${r1} • الفريق التاني يحتاج ${r2}`;
- }
+  const btn = document.getElementById('start-btn');
+  if (!btn) return;
+  const r1 = CATS_EACH - sel1.length, r2 = CATS_EACH - sel2.length;
+  if (sel1.length === CATS_EACH && sel2.length === CATS_EACH) {
+    btn.disabled = false;
+    btn.textContent = '🚀 ابدأ اللعبة الآن!';
+  } else {
+    btn.disabled = true;
+    btn.textContent = `الفريق الأول يحتاج ${r1} • الفريق التاني يحتاج ${r2}`;
+  }
 }
 
 function startGame() {
- if (sel1.length !== CATS_EACH || sel2.length !== CATS_EACH) return;
- t1Name = document.getElementById('t1name').value.trim() || 'الفريق الأول';
- t2Name = document.getElementById('t2name').value.trim() || 'الفريق التاني';
- t1Score = 0; t2Score = 0; usedTracker = {};
- 
- document.getElementById('t1disp').textContent = t1Name;
- document.getElementById('t2disp').textContent = t2Name;
- document.getElementById('t1val').textContent = '0';
- document.getElementById('t2val').textContent = '0';
- document.getElementById('gbt1').textContent = '✔ ' + t1Name;
- document.getElementById('gbt2').textContent = '✔ ' + t2Name;
- 
- const allCats = [...sel1.map(n => ({ name: n, team: 1 })), ...sel2.map(n => ({ name: n, team: 2 }))];
- boardColumns = allCats.map(({ name, team }) => {
-  const q200 = getRandomQuestions(name, 200, 2);
-  const q400 = getRandomQuestions(name, 400, 2);
-  const q600 = getRandomQuestions(name, 600, 2);
-  const cells = [];
-  for (let i = 0; i < 2; i++) cells.push({ ...q200[i], pts: 200, used: false, winner: 0 });
-  for (let i = 0; i < 2; i++) cells.push({ ...q400[i], pts: 400, used: false, winner: 0 });
-  for (let i = 0; i < 2; i++) cells.push({ ...q600[i], pts: 600, used: false, winner: 0 });
-  return { name, team, cells };
- });
- showScreen('game-screen');
- renderBoard();
+  if (sel1.length !== CATS_EACH || sel2.length !== CATS_EACH) return;
+  t1Name = document.getElementById('t1name').value.trim() || 'الفريق الأول';
+  t2Name = document.getElementById('t2name').value.trim() || 'الفريق التاني';
+  t1Score = 0; t2Score = 0; usedTracker = {};
+  document.getElementById('t1disp').textContent = t1Name;
+  document.getElementById('t2disp').textContent = t2Name;
+  document.getElementById('t1val').textContent = '0';
+  document.getElementById('t2val').textContent = '0';
+  document.getElementById('gbt1').textContent = '✔ ' + t1Name;
+  document.getElementById('gbt2').textContent = '✔ ' + t2Name;
+  
+  const allCats = [...sel1.map(n => ({ name: n, team: 1 })), ...sel2.map(n => ({ name: n, team: 2 }))];
+  boardColumns = allCats.map(({ name, team }) => {
+    const q200 = getRandomQuestions(name, 200, 2);
+    const q400 = getRandomQuestions(name, 400, 2);
+    const q600 = getRandomQuestions(name, 600, 2);
+    const cells = [];
+    for (let i = 0; i< 2; i++) cells.push({ ...q200[i], pts: 200, used: false, winner: 0 });
+    for (let i = 0; i < 2; i++) cells.push({ ...q400[i], pts: 400, used: false, winner: 0 });
+    for (let i = 0; i < 2; i++) cells.push({ ...q600[i], pts: 600, used: false, winner: 0 });
+    return { name, team, cells };
+  });
+  showScreen('game-screen');
+  renderBoard();
 }
 
 function renderBoard() {
- const board = document.getElementById('board');
- board.innerHTML = '';
- board.style.gridTemplateColumns = `repeat(${boardColumns.length}, 1fr)`;
- 
- boardColumns.forEach(col => {
-  const h = document.createElement('div');
-  h.className = `cat-hdr t${col.team}`;
-  h.textContent = col.name;
-  board.appendChild(h);
- });
- 
- for (let row = 0; row < 6; row++) {
-  boardColumns.forEach((col, ci) => {
-   const cellData = col.cells[row];
-   const cell = document.createElement('div');
-   let wCls = cellData.winner === 1 ? 't1w' : (cellData.winner === 2 ? 't2w' : '');
-   cell.className = `cell ${cellData.used ? 'used' : ''} ${wCls}`;
-   const v = document.createElement('div');
-   v.className = `cv cv${cellData.pts}`;
-   v.textContent = cellData.used ? (cellData.winner ? '✓' : '✗') : cellData.pts;
-   cell.appendChild(v);
-   if (cellData.used && cellData.winner) {
-    const dot = document.createElement('div');
-    dot.className = 'cell-dot';
-    cell.appendChild(dot);
-   }
-   if (!cellData.used) cell.onclick = () => openModal(ci, row);
-   board.appendChild(cell);
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  board.style.gridTemplateColumns = `repeat(${boardColumns.length}, 1fr)`;
+  boardColumns.forEach(col => {
+    const h = document.createElement('div');
+    h.className = `cat-hdr t${col.team}`;
+    h.textContent = col.name;
+    board.appendChild(h);
   });
- }
- checkGameOver();
+  for (let row = 0; row < 6; row++) {
+    boardColumns.forEach((col, ci) => {
+      const cellData = col.cells[row];
+      const cell = document.createElement('div');
+      let wCls = cellData.winner === 1 ? 't1w' : (cellData.winner === 2 ? 't2w' : '');
+      cell.className = `cell ${cellData.used ? 'used' : ''} ${wCls}`;
+      const v = document.createElement('div');
+      v.className = `cv cv${cellData.pts}`;
+      v.textContent = cellData.used ? (cellData.winner ? '✓' : '✗') : cellData.pts;
+      cell.appendChild(v);
+      if (cellData.used && cellData.winner) {
+        const dot = document.createElement('div');
+        dot.className = 'cell-dot';
+        cell.appendChild(dot);
+      }
+      if (!cellData.used) cell.onclick = () => openModal(ci, row);
+      board.appendChild(cell);
+    });
+  }
+  checkGameOver();
 }
 
 function openModal(col, row) {
- currentCell = { col, row };
- const item = boardColumns[col].cells[row];
- document.getElementById('mcat').textContent = boardColumns[col].name;
- document.getElementById('mpts').textContent = item.pts + ' نقطة';
- document.getElementById('mpts').className = `modal-pts p${item.pts}`;
- const qDiv = document.getElementById('mq');
- qDiv.innerHTML = item.q;
- qDiv.classList.toggle('acting-mode', item.isActing === true);
- document.getElementById('mans').textContent = item.a;
- document.getElementById('mans').classList.remove('revealed');
- document.getElementById('revbtn').style.display = 'block';
- document.getElementById('giverow').classList.remove('show');
- document.getElementById('modal').classList.add('open');
+  currentCell = { col, row };
+  const item = boardColumns[col].cells[row];
+  document.getElementById('mcat').textContent = boardColumns[col].name;
+  document.getElementById('mpts').textContent = item.pts + ' نقطة';
+  document.getElementById('mpts').className = `modal-pts p${item.pts}`;
+  const qDiv = document.getElementById('mq');
+  qDiv.innerHTML = item.q;
+  qDiv.classList.toggle('acting-mode', item.isActing === true);
+  document.getElementById('mans').textContent = item.a;
+  document.getElementById('mans').classList.remove('revealed');
+  document.getElementById('revbtn').style.display = 'block';
+  document.getElementById('giverow').classList.remove('show');
+  document.getElementById('modal').classList.add('open');
 }
 
 function revealAns() {
- document.getElementById('mans').classList.add('revealed');
- document.getElementById('revbtn').style.display = 'none';
- document.getElementById('giverow').classList.add('show');
+  document.getElementById('mans').classList.add('revealed');
+  document.getElementById('revbtn').style.display = 'none';
+  document.getElementById('giverow').classList.add('show');
 }
 
 function givePoint(team) {
- if (!currentCell) return;
- const item = boardColumns[currentCell.col].cells[currentCell.row];
- if (item.used) return;
- item.used = true; item.winner = team;
- if (team === 1) { t1Score += item.pts; document.getElementById('t1val').textContent = t1Score; } 
- else if (team === 2) { t2Score += item.pts; document.getElementById('t2val').textContent = t2Score; }
- closeModal(); renderBoard();
+  if (!currentCell) return;
+  const item = boardColumns[currentCell.col].cells[currentCell.row];
+  if (item.used) return;
+  item.used = true; item.winner = team;
+  if (team === 1) { t1Score += item.pts; document.getElementById('t1val').textContent = t1Score; }
+  else if (team === 2) { t2Score += item.pts; document.getElementById('t2val').textContent = t2Score; }
+  closeModal(); renderBoard();
 }
 
 function closeModal() {
- document.getElementById('modal').classList.remove('open');
- currentCell = null;
+  document.getElementById('modal').classList.remove('open');
+  currentCell = null;
 }
 
 function checkGameOver() {
- if (boardColumns.every(col => col.cells.every(c => c.used))) {
-  setTimeout(showResult, 400);
- }
+  if (boardColumns.every(col => col.cells.every(c => c.used))) {
+    setTimeout(showResult, 400);
+  }
 }
 
 function showResult() {
- document.getElementById('rn1').textContent = t1Name;
- document.getElementById('rn2').textContent = t2Name;
- document.getElementById('rv1').textContent = t1Score;
- document.getElementById('rv2').textContent = t2Score;
- let winnerText, trophyEmoji;
- if (t1Score > t2Score) { winnerText = t1Name + ' فاز! 🎉'; trophyEmoji = '🏆'; } 
- else if (t2Score > t1Score) { winnerText = t2Name + ' فاز! 🎉'; trophyEmoji = '🏆'; } 
- else { winnerText = 'تعادل! 🤝'; trophyEmoji = '🤝'; }
- document.getElementById('rtrophy').textContent = trophyEmoji;
- document.getElementById('rwinner').textContent = winnerText;
- showScreen('result-screen');
+  document.getElementById('rn1').textContent = t1Name;
+  document.getElementById('rn2').textContent = t2Name;
+  document.getElementById('rv1').textContent = t1Score;
+  document.getElementById('rv2').textContent = t2Score;
+  let winnerText, trophyEmoji;
+  if (t1Score > t2Score) { winnerText = t1Name + ' فاز! 🎉'; trophyEmoji = '🏆'; }
+  else if (t2Score > t1Score) { winnerText = t2Name + ' فاز! 🎉'; trophyEmoji = '🏆'; }
+  else { winnerText = 'تعادل! 🤝'; trophyEmoji = '🤝'; }
+  document.getElementById('rtrophy').textContent = trophyEmoji;
+  document.getElementById('rwinner').textContent = winnerText;
+  showScreen('result-screen');
 }
 
 function showScreen(id) {
- document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
- buildChips();
- const startBtn = document.getElementById('start-btn');
- if (startBtn) startBtn.onclick = startGame;
+  buildChips();
+  const startBtn = document.getElementById('start-btn');
+  if (startBtn) startBtn.onclick = startGame;
 });
